@@ -236,21 +236,25 @@ Application runs at `http://localhost:3000`
 
 ## Technical Specifications
 
-### Deployed Contracts (Testnet)
+### Deployed Contracts (Stellar Testnet)
 
-| Contract | Address | Function |
-|----------|---------|----------|
-| Stop-Loss Engine | `CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM` | Order execution and management |
-| Oracle Router | `CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN` | Price aggregation and routing |
-| Liquidation Monitor | `CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW` | Collateral ratio monitoring |
+All contracts are live on Stellar's test network. You can view them on [Stellar Expert](https://stellar.expert/explorer/testnet).
 
-### Oracle Configuration
+| Contract | Address | What it does |
+|----------|---------|--------------|
+| Stop-Loss Engine | [`CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM`](https://stellar.expert/explorer/testnet/contract/CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM) | Handles all your trading orders |
+| Oracle Router | [`CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN) | Gets accurate prices from markets |
+| Liquidation Monitor | [`CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW`](https://stellar.expert/explorer/testnet/contract/CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW) | Watches collateral health |
 
-```
-External Oracle: CCYOZJCOPG34LLQQ7N24YXBM7LL62R7ONMZ3G6WZAAYPB5OYKOMJRN63
-Stellar Oracle: CAVLP5DH2GJPZMVO7IJY4CVOD5MWEFTJFVPD2YY2FQXOQHRGHK4D6HLP
-Forex Oracle: CCSSOHTBL3LEWUCBBEB5NJFC2OKFRC74OWEIJIZLRJBGAAU4VMU5NV4W
-```
+### Price Feed Sources (Powered by Reflector Network)
+
+We use Reflector Network's professional oracles for real-time prices:
+
+| Oracle Type | Contract Address | Provides |
+|-------------|------------------|----------|
+| Crypto Prices | [`CCYOZJCOPG34LLQQ7N24YXBM7LL62R7ONMZ3G6WZAAYPB5OYKOMJRN63`](https://stellar.expert/explorer/testnet/contract/CCYOZJCOPG34LLQQ7N24YXBM7LL62R7ONMZ3G6WZAAYPB5OYKOMJRN63) | BTC, ETH prices from major exchanges |
+| Stellar Assets | [`CAVLP5DH2GJPZMVO7IJY4CVOD5MWEFTJFVPD2YY2FQXOQHRGHK4D6HLP`](https://stellar.expert/explorer/testnet/contract/CAVLP5DH2GJPZMVO7IJY4CVOD5MWEFTJFVPD2YY2FQXOQHRGHK4D6HLP) | XLM and native Stellar tokens |
+| Forex Rates | [`CCSSOHTBL3LEWUCBBEB5NJFC2OKFRC74OWEIJIZLRJBGAAU4VMU5NV4W`](https://stellar.expert/explorer/testnet/contract/CCSSOHTBL3LEWUCBBEB5NJFC2OKFRC74OWEIJIZLRJBGAAU4VMU5NV4W) | USD, EUR exchange rates |
 
 ### Technology Stack
 
@@ -318,10 +322,11 @@ Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who belie
 
 ## Links and Resources
 
-- Demo: Available via local setup (see Installation)
-- Documentation: [/docs](./docs)
-- Telegram Bot: @core_dot_fun_bot
-- Contract Explorer: View on Stellar Expert
+- GitHub Repository: [https://github.com/Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
+- Live Demo: Run locally with `pnpm dev` (see Installation)
+- Telegram Bot: [@core_dot_fun_bot](https://t.me/core_dot_fun_bot)
+- Blockchain Explorer: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
+- Oracle Provider: [Reflector Network](https://reflector.network)
 
 ## License
 
