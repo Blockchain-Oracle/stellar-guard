@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 14 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 14 100% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 14 100% 60%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-black text-white;
+    background-image: linear-gradient(rgba(255, 107, 53, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 107, 53, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-color: rgb(10, 10, 10);
+    min-height: 100vh;
+  }
+}
+
+/* Grid overlay effect */
+.grid-overlay {
+  background-image: linear-gradient(rgba(255, 107, 53, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 107, 53, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Neon glow effects */
+.neon-orange {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+  border-color: rgb(255 107 53 / 0.3);
+}
+
+.neon-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  border-color: rgb(6 182 212 / 0.3);
+}
+
+.neon-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  border-color: rgb(34 197 94 / 0.3);
+}
+
+/* Text glow effects */
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+/* Cyber button styles */
+.cyber-button {
+  @apply font-semibold tracking-wide text-white transition-all duration-300 transform hover:scale-105 active:scale-95 rounded-lg;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch {
+  animation: glitch 0.5s infinite;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 53, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 53, 0.5);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
