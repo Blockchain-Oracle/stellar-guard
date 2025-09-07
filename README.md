@@ -1,6 +1,15 @@
 # Stellar Guard - Your 24/7 Trading Bodyguard
 
-Ever woke up to find your crypto portfolio down 30% because you were sleeping? We built Stellar Guard to watch your trades while you live your life.
+**Powered by Reflector Network Oracles** | Stop-Loss & Take-Profit Orders on Stellar
+
+Ever woke up to find your crypto portfolio down 30% because you were sleeping? We built Stellar Guard to watch your trades while you live your life, using Reflector Network's professional price feeds to execute orders with institutional-grade accuracy.
+
+```
+🔸 Real-time prices from Reflector Network's decentralized oracles
+🔸 Automated stop-loss, take-profit, and trailing stop orders
+🔸 Non-custodial - you control your funds
+🔸 Telegram alerts when orders execute
+```
 
 ## Watch It In Action
 
@@ -342,14 +351,10 @@ MIT License - open source and free to use
 
 ## Built With
 
-- **Stellar Soroban** - Smart contract platform
 - **Reflector Network** - Professional oracle infrastructure for accurate price feeds
+- **Stellar Soroban** - Smart contract platform
 - **Freighter Wallet** - Seamless Web3 integration
 - **Next.js & TypeScript** - Modern web framework
-
-## Hackathon Track
-
-This project was built for the **Reflector Network Oracle Track** of the Stellar Hackathon 2024. We leverage Reflector's decentralized oracle infrastructure to provide reliable, manipulation-resistant price feeds for automated trading protection.
 
 ---
 
