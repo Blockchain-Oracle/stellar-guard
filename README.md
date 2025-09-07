@@ -11,6 +11,10 @@ Ever woke up to find your crypto portfolio down 30% because you were sleeping? W
 🔸 Telegram alerts when orders execute
 ```
 
+## 🚀 Live Demo
+
+**Try it now:** [https://stellar-guard.vercel.app](https://stellar-guard.vercel.app)
+
 ## Live on Stellar Testnet
 
 **Smart Contracts:** [View on Stellar Expert](https://stellar.expert/explorer/testnet)
@@ -357,11 +361,11 @@ We integrated [Reflector Network](https://reflector.network/) - Stellar's profes
 
 ## Links and Resources
 
-- GitHub Repository: [https://github.com/Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
-- Live Demo: Run locally with `pnpm dev` (see Installation)
-- Telegram Bot: [@StellarGuard_Bot](https://t.me/StellarGuard_Bot)
-- Blockchain Explorer: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
-- Oracle Provider: [Reflector Network](https://reflector.network/)
+- **Live Demo**: [https://stellar-guard.vercel.app](https://stellar-guard.vercel.app)
+- **GitHub Repository**: [https://github.com/Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
+- **Telegram Bot**: [@StellarGuard_Bot](https://t.me/StellarGuard_Bot)
+- **Blockchain Explorer**: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
+- **Oracle Provider**: [Reflector Network](https://reflector.network/)
 
 ## License
 

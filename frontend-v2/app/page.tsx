@@ -65,10 +65,10 @@ export default function HomePage() {
   ]
 
   const stats = [
-    { label: "TVL_PROTECTED", value: "$12.5M", change: "+23%", icon: DollarSign },
-    { label: "ACTIVE_USERS", value: "2,847", change: "+156%", icon: Users },
-    { label: "ORDERS_EXECUTED", value: "48,392", change: "+89%", icon: Shield },
-    { label: "LIQUIDATIONS_PREVENTED", value: "1,243", change: "+67%", icon: TrendingUp },
+    { label: "TESTNET_DEMO", value: "LIVE", change: "Ready", icon: DollarSign },
+    { label: "CONTRACTS_DEPLOYED", value: "3", change: "Active", icon: Users },
+    { label: "ORACLES_CONNECTED", value: "3", change: "Reflector", icon: Shield },
+    { label: "ORDER_TYPES", value: "3", change: "Available", icon: TrendingUp },
   ]
 
   return (
