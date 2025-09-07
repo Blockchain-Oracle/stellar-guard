@@ -58,3 +58,15 @@ yarn-error.log*
 Cargo.lock
 **/*.rs.bk
 *.pdb
+
+# Frontend build files
+frontend-v2/node_modules/
+frontend-v2/dist/
+frontend-v2/build/
+frontend-v2/out/
+frontend-v2/.next/
+
+# Lock files - Vercel will generate its own
+frontend-v2/pnpm-lock.yaml
+frontend-v2/package-lock.json
+frontend-v2/yarn.lock
