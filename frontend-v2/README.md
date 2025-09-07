@@ -175,3 +175,4 @@ The app can be deployed on any platform that supports Next.js:
 MIT
 
 
+
