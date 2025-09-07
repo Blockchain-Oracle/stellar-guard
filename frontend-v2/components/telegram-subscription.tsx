@@ -177,22 +177,28 @@ export function TelegramSubscription() {
               Connect your Telegram to receive real-time alert notifications
             </p>
             
-            {/* Bot Username */}
+            {/* Bot Username - Clickable */}
             <div className="bg-gray-900/50 rounded-lg p-4 border border-purple-500/30">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-400 font-mono">BOT_USERNAME</span>
+                <span className="text-sm text-gray-400 font-mono">TELEGRAM_BOT</span>
                 <CyberButton
                   size="sm"
                   variant="secondary"
                   onClick={copyBotUsername}
                 >
                   <Copy className="h-3 w-3" />
+                  COPY
                 </CyberButton>
               </div>
-              <div className="flex items-center gap-2">
+              <a 
+                href={`https://t.me/${botUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-purple-300 transition-colors"
+              >
                 <Send className="h-4 w-4 text-purple-400" />
-                <span className="font-mono text-purple-400">@{botUsername}</span>
-              </div>
+                <span className="font-mono text-purple-400 underline decoration-dotted underline-offset-4">@{botUsername}</span>
+              </a>
             </div>
             
             {/* Instructions Toggle */}
@@ -252,16 +258,22 @@ export function TelegramSubscription() {
               )}
             </CyberButton>
             
-            {/* External Link */}
-            <a
-              href={`https://t.me/${botUsername}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition font-mono"
-            >
-              Open in Telegram
-              <ExternalLink className="h-3 w-3" />
-            </a>
+            {/* External Link - More prominent */}
+            <div className="pt-2 border-t border-purple-500/20">
+              <a
+                href={`https://t.me/${botUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 transition font-mono py-3 px-4 rounded-lg border border-purple-500/30"
+              >
+                <Send className="h-4 w-4" />
+                Open @{botUsername} in Telegram
+                <ExternalLink className="h-4 w-4" />
+              </a>
+              <p className="text-xs text-gray-500 font-mono text-center mt-2">
+                Click above to open Telegram and get your Chat ID
+              </p>
+            </div>
           </div>
         ) : (
           // Connected - show status
