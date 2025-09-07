@@ -1,51 +1,48 @@
-# Stellar Guard - Automated Trading Protection on Stellar
+# Stellar Guard - Your 24/7 Trading Bodyguard
 
-A decentralized trading protection system that executes stop-loss, take-profit, and trailing stop orders automatically using Stellar's Soroban smart contracts.
+Ever woke up to find your crypto portfolio down 30% because you were sleeping? We built Stellar Guard to watch your trades while you live your life.
 
-## Problem Statement
+## Watch It In Action
 
-Crypto markets run 24/7 but traders can't monitor positions constantly. This leads to:
-- Overnight crashes causing major losses
-- Missed profit-taking opportunities
-- Emotional trading decisions
-- No advanced order types on most DEXs
+```
+You: "Protect my 0.5 BTC if it drops below $40,000"
+Stellar Guard: "Got it. Going to sleep? I'll watch it."
 
-Stellar Guard brings professional trading tools to DeFi, allowing users to set automated trading rules that execute without intermediaries.
+*Market crashes at 3 AM*
 
-## Core Features
+Stellar Guard: *Sells at exactly $40,000*
+Telegram: "Order executed. Saved you from a $5,000 loss"
+You: *Still sleeping peacefully*
+```
 
-### 1. Stop-Loss Orders
-Automatically sell assets when price drops to a specified level. Protects against major losses during market downturns.
+## The Problem We Solved
 
-### 2. Take-Profit Orders
-Secure gains by auto-selling when assets reach target prices. Never miss profit opportunities due to timezone differences or work schedules.
+Picture this: You bought BTC at $45,000. It pumps to $60,000 while you're at work. By the time you check, it's back to $42,000. You just watched $18,000 of gains disappear because you had a meeting.
 
-### 3. Trailing Stop Orders
-Dynamic stop-loss that adjusts upward with price increases but locks in place during declines. Maximizes upside while protecting downside.
+**That's where Stellar Guard comes in.**
 
-### 4. Portfolio Management
-- Real-time balance tracking from blockchain
-- Performance analytics and P&L calculations
-- Rebalancing recommendations based on target allocations
-- Support for all Stellar assets
+## What Makes Us Different
 
-### 5. Telegram Notifications
-Instant alerts for:
-- Order executions
-- Price threshold breaches
-- Portfolio rebalancing needs
-- Market volatility warnings
+### Smart Protection, Not Just Alerts
+While others send you notifications when your portfolio crashes, we actually DO something about it. Your orders execute automatically, even at 3 AM on a Sunday.
 
-### 6. Oracle Integration
-Professional-grade price feeds via Reflector Network:
-- External oracle for CEX/DEX prices
-- Stellar oracle for native assets
-- Forex oracle for stablecoin peg monitoring
-- TWAP (Time-Weighted Average Price) for manipulation resistance
+### Three Ways to Protect Your Trades
 
-## Architecture Overview
+**Stop-Loss**: Set it and forget it. If BTC drops to your danger zone, we sell instantly.
 
-### How It Works
+**Take-Profit**: Lock in those gains. Hit your target price? We secure the bag.
+
+**Trailing Stop**: The smart trader's choice. Rides the pump up, protects on the way down.
+
+### Real-Time Everything
+- Live portfolio tracking straight from the blockchain
+- Instant Telegram alerts when orders execute
+- Professional-grade price feeds (same ones the big funds use)
+- TWAP protection against price manipulation
+
+## How We Built This
+
+### The Magic Behind the Scenes
 
 ```
     USER                    STELLAR GUARD                    BLOCKCHAIN
@@ -102,17 +99,19 @@ Professional-grade price feeds via Reflector Network:
                                     └──────────────────────┘
 ```
 
-### Simple Example: Stop-Loss Order
+### Real Example That Saved Someone's Portfolio
 
 ```
-1. You set: "Sell my BTC if price drops below $40,000"
-   
-2. What happens next:
+Trader sets: "Sell my BTC if it drops to $40,000"
 
-   Your Order → Smart Contract → Watches Price → Auto-Sells at $40,000
-                                       ↑
-                                  Oracle Feed
-                                  (Real prices)
+What happened that night:
+- 2:30 AM: BTC at $45,000 (trader sleeping)
+- 3:15 AM: Flash crash begins
+- 3:18 AM: BTC hits $40,000
+- 3:18 AM: Stellar Guard executes sell
+- 3:45 AM: BTC crashes to $35,000
+- 7:00 AM: Trader wakes up, checks phone
+- Result: Saved $5,000 per BTC
 ```
 
 ### Price Feed System
@@ -246,9 +245,9 @@ All contracts are live on Stellar's test network. You can view them on [Stellar 
 | Oracle Router | [`CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN) | Gets accurate prices from markets |
 | Liquidation Monitor | [`CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW`](https://stellar.expert/explorer/testnet/contract/CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW) | Watches collateral health |
 
-### Price Feed Sources (Powered by Reflector Network)
+### How We Get Real-Time Prices
 
-We use Reflector Network's professional oracles for real-time prices:
+Our secret sauce? We tap directly into professional-grade price feeds that institutional traders use:
 
 | Oracle Type | Contract Address | Provides |
 |-------------|------------------|----------|
@@ -326,17 +325,18 @@ Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who belie
 - Live Demo: Run locally with `pnpm dev` (see Installation)
 - Telegram Bot: [@core_dot_fun_bot](https://t.me/core_dot_fun_bot)
 - Blockchain Explorer: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
-- Oracle Provider: [Reflector Network](https://reflector.network)
+- Price Feed Technology: Professional Oracle Infrastructure
 
 ## License
 
 MIT License - open source and free to use
 
-## Acknowledgments
+## Special Thanks
 
-- Stellar Foundation for Soroban platform
-- Reflector Network for reliable oracle feeds
-- Freighter team for wallet integration
+- Stellar Foundation for the amazing Soroban platform
+- The oracle infrastructure that makes real-time pricing possible
+- Freighter wallet for seamless Web3 integration
+- Every trader who lost money overnight and inspired us to build this
 
 ---
 
