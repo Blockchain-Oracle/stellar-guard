@@ -156,8 +156,8 @@ export const getTelegramInstructions = (): string[] => {
   return [
     `1. Click "Open in Telegram" below or search for @${botUsername}`,
     `2. Start a chat with the bot by clicking "START" button`,
-    `3. The bot will immediately reply with your Chat ID`,
-    `4. Copy the Chat ID number (e.g., 123456789)`,
+    `3. The bot will immediately reply with your User ID (Chat ID)`,
+    `4. Copy the User ID number (e.g., 123456789)`,
     `5. Paste it in the field below and click "Verify & Connect"`,
   ];
 };

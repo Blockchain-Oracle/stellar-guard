@@ -225,10 +225,10 @@ export function TelegramSubscription() {
               </div>
             )}
             
-            {/* Chat ID Input */}
+            {/* User ID Input */}
             <div className="space-y-2">
               <label className="text-sm text-gray-400 font-mono">
-                ENTER_CHAT_ID
+                ENTER_USER_ID
               </label>
               <input
                 type="text"
@@ -271,7 +271,7 @@ export function TelegramSubscription() {
                 <ExternalLink className="h-4 w-4" />
               </a>
               <p className="text-xs text-gray-500 font-mono text-center mt-2">
-                Click above to open Telegram and get your Chat ID
+                Click above to open Telegram and get your User ID
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function TelegramSubscription() {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-xs text-gray-500 font-mono">CHAT_ID</span>
+                  <span className="text-xs text-gray-500 font-mono">USER_ID</span>
                   <span className="text-xs font-mono text-purple-400">{config.chatId}</span>
                 </div>
                 <div className="flex justify-between">
