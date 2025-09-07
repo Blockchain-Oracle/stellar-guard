@@ -11,6 +11,12 @@ Ever woke up to find your crypto portfolio down 30% because you were sleeping? W
 🔸 Telegram alerts when orders execute
 ```
 
+## Live on Stellar Testnet
+
+**Smart Contracts:** [View on Stellar Expert](https://stellar.expert/explorer/testnet)
+- Stop-Loss Engine: [`CDSKXUU...6ZP5EUMM`](https://stellar.expert/explorer/testnet/contract/CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM)
+- Oracle Router: [`CB3AWIGZ...TFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN)
+
 ## Watch It In Action
 
 ```
@@ -24,11 +30,12 @@ Telegram: "Order executed. Saved you from a $5,000 loss"
 You: *Still sleeping peacefully*
 ```
 
-## The Problem We Solved
+## Why We Built This
 
 Picture this: You bought BTC at $45,000. It pumps to $60,000 while you're at work. By the time you check, it's back to $42,000. You just watched $18,000 of gains disappear because you had a meeting.
 
-**That's where Stellar Guard comes in.**
+**The Problem:** DEXs don't have stop-loss orders because they lack reliable price feeds.
+**Our Solution:** Integrate Reflector Network's oracle infrastructure to enable automated trading protection on Stellar.
 
 ## What Makes Us Different
 
@@ -191,35 +198,35 @@ stellar-guard/
     └── README.md         # This file
 ```
 
-## Installation
+## Quick Start for Judges
 
-### Prerequisites
-- Node.js 18+
-- pnpm package manager
-- Freighter wallet extension
-
-### Setup
+### Test Credentials & Setup
 
 ```bash
-# Clone repository
-git clone https://github.com/your-team/stellar-guard
+# 1. Clone and install
+git clone https://github.com/Blockchain-Oracle/stellar-guard
 cd stellar-guard/frontend-v2
-
-# Install dependencies
 pnpm install
-
-# Start development server
 pnpm dev
 ```
 
-Application runs at `http://localhost:3000`
+### Test Account (Optional)
+If you don't want to create your own testnet account:
+```
+Public Key: GBCGBY3KVQXSPSOMTBVPGGB7V2NGLKWGXIPR63SSTJFROVNUR24UYKOT
+Note: Use Freighter wallet to import or create your own testnet account
+```
 
-### Testnet Configuration
+### Getting Testnet XLM
+1. Go to [Stellar Laboratory](https://laboratory.stellar.org/#account-creator)
+2. Generate keypair and fund with friendbot
+3. Import to Freighter wallet (switch to testnet mode)
 
-1. Install Freighter wallet browser extension
-2. Switch to testnet in Freighter settings
-3. Get test XLM from [Stellar Laboratory](https://laboratory.stellar.org/#account-creator)
-4. Connect wallet in the application
+### Testing the App
+1. Open http://localhost:3000
+2. Connect Freighter wallet
+3. Create a test order (use small amounts)
+4. Check Telegram bot: @StellarGuard_Bot
 
 ## Usage Guide
 
@@ -333,9 +340,20 @@ We integrated [Reflector Network](https://reflector.network/) - Stellar's profes
 - Cross-chain support
 - Limit order functionality
 
-## Team
+## Future Development
 
-Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who believe trading protection should be accessible to everyone, not just institutional traders.
+### Coming Next
+- Mobile app for iOS/Android
+- More order types (OCO, Iceberg)
+- Multi-chain expansion
+- AI-powered trading suggestions
+- Social trading features
+
+### Technical Roadmap
+- Implement cross-chain bridges
+- Add more Reflector oracle feeds
+- Gas optimization for batch orders
+- Advanced charting integration
 
 ## Links and Resources
 
@@ -349,13 +367,33 @@ Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who belie
 
 MIT License - open source and free to use
 
+## Technical Architecture Decisions
+
+### Why Reflector Network?
+- **Decentralized**: No single point of failure
+- **Multi-source aggregation**: Prices from multiple exchanges
+- **Manipulation resistant**: TWAP calculations prevent attacks
+- **Sub-second updates**: Critical for stop-loss accuracy
+
+### Why Stellar/Soroban?
+- **Low fees**: Orders cost < $0.01 to create
+- **Fast finality**: 5-second block times
+- **Native DEX**: Deep liquidity for order execution
+- **Growing ecosystem**: First-mover advantage
+
 ## Built With
 
-- **Reflector Network** - Professional oracle infrastructure for accurate price feeds
+- **Reflector Network** - Professional oracle infrastructure
 - **Stellar Soroban** - Smart contract platform
-- **Freighter Wallet** - Seamless Web3 integration
-- **Next.js & TypeScript** - Modern web framework
+- **Freighter Wallet** - Web3 integration
+- **Next.js & TypeScript** - Modern web stack
+
+## Contact
+
+- **GitHub**: [Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
+- **Project Lead**: Available via GitHub Issues
+- **Support**: Create an issue or reach out on Telegram
 
 ---
 
-*Stellar Guard - Professional trading tools for everyone*
+*Stellar Guard - Making DeFi trading safer for everyone*
