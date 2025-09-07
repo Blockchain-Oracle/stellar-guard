@@ -115,7 +115,7 @@ export default function CreateOrderPage() {
       // Pass the asset symbol to the contract
       const orderId = await createStopLossOrder(
         walletAddress,
-        asset, // Pass the asset symbol directly (e.g., "BTC", "ETH")
+        selectedAsset, // Pass the asset symbol directly (e.g., "BTC", "ETH")
         amountBigInt,
         stopPriceBigInt,
         orderType

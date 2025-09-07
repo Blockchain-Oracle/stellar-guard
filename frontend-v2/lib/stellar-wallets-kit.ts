@@ -31,7 +31,7 @@ export const initializeWalletKit = () => {
       network: process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet' 
         ? WalletNetwork.PUBLIC 
         : WalletNetwork.TESTNET,
-      selectedWallet: getSelectedWalletId() || FREIGHTER_ID,
+      selectedWalletId: getSelectedWalletId() || FREIGHTER_ID,
       modules: allowAllModules(),
     });
   }
@@ -130,7 +130,6 @@ export const connect = async (): Promise<string> => {
   return new Promise((resolve, reject) => {
     walletKit.openModal({
       modalTitle: 'Connect to StellarGuard',
-      allowedWallets: [FREIGHTER_ID],
       onWalletSelected: async (option: ISupportedWallet) => {
         try {
           walletKit.setWallet(option.id);
@@ -183,7 +182,7 @@ export const signTransaction = async (
     address: opts?.address,
   });
   
-  return { signedTxXdr: signedXdr };
+  return signedXdr;
 };
 
 // Sign transaction in dev mode

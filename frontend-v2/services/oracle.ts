@@ -54,7 +54,7 @@ export const getCurrentPrice = async (asset: string, assetType: AssetType = 'cry
     console.log(`[getCurrentPrice] Full simulation response:`, JSON.stringify(simulated, null, 2));
     
     // Check different possible response structures
-    if (simulated.error) {
+    if ('error' in simulated && simulated.error) {
       console.error(`[getCurrentPrice] Simulation error for ${asset}:`, simulated.error);
       return null;
     }
@@ -63,10 +63,10 @@ export const getCurrentPrice = async (asset: string, assetType: AssetType = 'cry
     let result = null;
     if ('result' in simulated && simulated.result) {
       result = simulated.result;
-    } else if (simulated.results && simulated.results.length > 0) {
-      result = simulated.results[0];
-    } else if (simulated.returnValue) {
-      result = simulated.returnValue;
+    } else if ('results' in simulated && (simulated as any).results?.length > 0) {
+      result = (simulated as any).results[0];
+    } else if ('returnValue' in simulated && (simulated as any).returnValue) {
+      result = (simulated as any).returnValue;
     }
     
     if (result) {
@@ -131,7 +131,7 @@ export const getTWAPPrice = async (asset: string, periods: number, assetType: As
     console.log(`[getTWAPPrice] Full TWAP simulation response:`, JSON.stringify(simulated, null, 2));
     
     // Check for errors
-    if (simulated.error) {
+    if ('error' in simulated && simulated.error) {
       console.error(`[getTWAPPrice] Simulation error for ${asset}:`, simulated.error);
       return null;
     }
@@ -140,10 +140,10 @@ export const getTWAPPrice = async (asset: string, periods: number, assetType: As
     let result = null;
     if ('result' in simulated && simulated.result) {
       result = simulated.result;
-    } else if (simulated.results && simulated.results.length > 0) {
-      result = simulated.results[0];
-    } else if (simulated.returnValue) {
-      result = simulated.returnValue;
+    } else if ('results' in simulated && (simulated as any).results?.length > 0) {
+      result = (simulated as any).results[0];
+    } else if ('returnValue' in simulated && (simulated as any).returnValue) {
+      result = (simulated as any).returnValue;
     }
     
     if (result) {
@@ -256,7 +256,7 @@ function parseReflectorPrice(value: any): number | null {
           if (val._switch?.name === 'scvI128') {
             const lo = val._value._attributes.lo;
             const hi = val._value._attributes.hi;
-            const fullValue = (BigInt(hi._value) << 64n) | BigInt(lo._value);
+            const fullValue = (BigInt(hi._value) << BigInt(64)) | BigInt(lo._value);
             const price = Number(fullValue) / Math.pow(10, 14);
             console.log('[parseReflectorPrice] Parsed price from map:', price);
             return price;
@@ -295,7 +295,7 @@ function parseReflectorPrice(value: any): number | null {
         const lo = typeof i128Val.lo === 'function' ? i128Val.lo() : i128Val.lo;
         const hi = typeof i128Val.hi === 'function' ? i128Val.hi() : i128Val.hi;
         // Combine hi and lo parts for full i128 value
-        const fullValue = (BigInt(hi) << 64n) | BigInt(lo);
+        const fullValue = (BigInt(hi) << BigInt(64)) | BigInt(lo);
         const price = Number(fullValue) / Math.pow(10, 14);
         console.log('[parseReflectorPrice] Parsed from i128:', price);
         return price;
@@ -308,7 +308,7 @@ function parseReflectorPrice(value: any): number | null {
       if (i128Data && i128Data._attributes) {
         const lo = i128Data._attributes.lo;
         const hi = i128Data._attributes.hi;
-        const fullValue = (BigInt(hi) << 64n) | BigInt(lo);
+        const fullValue = (BigInt(hi) << BigInt(64)) | BigInt(lo);
         const price = Number(fullValue) / Math.pow(10, 14);
         console.log('[parseReflectorPrice] Parsed from ScVal i128:', price);
         return price;

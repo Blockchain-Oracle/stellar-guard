@@ -39,12 +39,13 @@ export const getUserBalances = async (userAddress: string): Promise<PortfolioAss
     const portfolioAssets: PortfolioAsset[] = [];
     
     // Check if balances exist and is an array
-    if (!account || !account.balances || !Array.isArray(account.balances)) {
+    const accountWithBalances = account as any;
+    if (!accountWithBalances || !accountWithBalances.balances || !Array.isArray(accountWithBalances.balances)) {
       return [];
     }
     
     // Process each balance
-    for (const balance of account.balances) {
+    for (const balance of accountWithBalances.balances) {
       let asset = '';
       let assetType = '';
       let issuer = '';

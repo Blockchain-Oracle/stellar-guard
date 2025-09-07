@@ -305,7 +305,7 @@ export function TelegramSubscription() {
             {/* Disconnect */}
             <CyberButton
               onClick={handleDisconnect}
-              variant="destructive"
+              variant="danger"
               size="sm"
               className="w-full"
             >

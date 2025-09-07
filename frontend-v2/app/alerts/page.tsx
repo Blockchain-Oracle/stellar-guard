@@ -378,7 +378,7 @@ function AlertsContent() {
           </div>
         </NeonCard>
 
-        <NeonCard variant="yellow">
+        <NeonCard variant="orange">
           <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <AlertTriangle className="h-5 w-5 text-yellow-400" />

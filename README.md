@@ -391,7 +391,7 @@ MIT License - open source and free to use
 ## Contact
 
 - **GitHub**: [Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
-- **Project Lead**: Available via GitHub Issues
+- **Telegram**: [@BlockchainOracle_dev](https://t.me/BlockchainOracle_dev)
 - **Support**: Create an issue or reach out on Telegram
 
 ---

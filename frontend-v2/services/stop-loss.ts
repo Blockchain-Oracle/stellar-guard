@@ -120,7 +120,7 @@ export const createStopLossOrder = async (
         // Extract order ID from return value
         const returnVal = getResponse.returnValue;
         if (returnVal && typeof returnVal === 'object' && 'u64' in returnVal) {
-          return BigInt(returnVal.u64);
+          return BigInt((returnVal as any).u64);
         }
         return BigInt(1); // Default order ID if extraction fails
       } else {

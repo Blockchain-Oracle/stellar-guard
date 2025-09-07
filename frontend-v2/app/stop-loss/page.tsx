@@ -323,7 +323,7 @@ function StopLossContent() {
                         {order.status === 'active' && (
                           <CyberButton
                             size="sm"
-                            variant="destructive"
+                            variant="danger"
                             onClick={() => handleCancelOrder(order.id)}
                             disabled={cancellingOrder === order.id}
                           >
