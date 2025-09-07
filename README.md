@@ -220,7 +220,7 @@ Application runs at `http://localhost:3000`
 
 1. Open Alerts page
 2. Find Telegram Notifications section
-3. Start chat with @core_dot_fun_bot
+3. Start chat with @StellarGuard_Bot
 4. Send `/start` to receive chat ID
 5. Enter chat ID in application
 6. Verify connection
@@ -323,7 +323,7 @@ Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who belie
 
 - GitHub Repository: [https://github.com/Blockchain-Oracle/stellar-guard](https://github.com/Blockchain-Oracle/stellar-guard)
 - Live Demo: Run locally with `pnpm dev` (see Installation)
-- Telegram Bot: [@core_dot_fun_bot](https://t.me/core_dot_fun_bot)
+- Telegram Bot: [@StellarGuard_Bot](https://t.me/StellarGuard_Bot)
 - Blockchain Explorer: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
 - Price Feed Technology: Professional Oracle Infrastructure
 
