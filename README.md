@@ -37,8 +37,17 @@ While others send you notifications when your portfolio crashes, we actually DO 
 ### Real-Time Everything
 - Live portfolio tracking straight from the blockchain
 - Instant Telegram alerts when orders execute
-- Professional-grade price feeds (same ones the big funds use)
-- TWAP protection against price manipulation
+- Professional-grade price feeds via Reflector Network oracles
+- TWAP (Time-Weighted Average Price) for manipulation protection
+
+### Why Reflector Network Makes This Possible
+
+Traditional DEXs can't offer stop-losses because they lack reliable price data. We solved this by integrating Reflector Network's oracle infrastructure:
+
+- **Multi-Source Aggregation**: Prices from Binance, Coinbase, and major exchanges
+- **Manipulation Resistant**: TWAP calculations prevent flash loan attacks
+- **Three Oracle Types**: Crypto (BTC/ETH), Stellar native assets, and Forex rates
+- **Sub-Second Updates**: Real-time price feeds for instant order execution
 
 ## How We Built This
 
@@ -245,9 +254,9 @@ All contracts are live on Stellar's test network. You can view them on [Stellar 
 | Oracle Router | [`CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN) | Gets accurate prices from markets |
 | Liquidation Monitor | [`CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW`](https://stellar.expert/explorer/testnet/contract/CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW) | Watches collateral health |
 
-### How We Get Real-Time Prices
+### Powered by Reflector Network Oracle
 
-Our secret sauce? We tap directly into professional-grade price feeds that institutional traders use:
+We integrated [Reflector Network](https://reflector.network/) - Stellar's professional oracle infrastructure - to get institutional-grade price feeds:
 
 | Oracle Type | Contract Address | Provides |
 |-------------|------------------|----------|
@@ -260,7 +269,7 @@ Our secret sauce? We tap directly into professional-grade price feeds that insti
 - Frontend: Next.js 15, TypeScript, Tailwind CSS
 - Smart Contracts: Rust, Soroban SDK
 - Blockchain: Stellar Network (Testnet)
-- Price Feeds: Reflector Oracle Network
+- Oracle Infrastructure: [Reflector Network](https://reflector.network/)
 - Notifications: Telegram Bot API
 
 ## Use Cases
@@ -325,18 +334,22 @@ Built for the Stellar Hackathon 2024. We're a team of DeFi enthusiasts who belie
 - Live Demo: Run locally with `pnpm dev` (see Installation)
 - Telegram Bot: [@StellarGuard_Bot](https://t.me/StellarGuard_Bot)
 - Blockchain Explorer: [Stellar Expert (Testnet)](https://stellar.expert/explorer/testnet)
-- Price Feed Technology: Professional Oracle Infrastructure
+- Oracle Provider: [Reflector Network](https://reflector.network/)
 
 ## License
 
 MIT License - open source and free to use
 
-## Special Thanks
+## Built With
 
-- Stellar Foundation for the amazing Soroban platform
-- The oracle infrastructure that makes real-time pricing possible
-- Freighter wallet for seamless Web3 integration
-- Every trader who lost money overnight and inspired us to build this
+- **Stellar Soroban** - Smart contract platform
+- **Reflector Network** - Professional oracle infrastructure for accurate price feeds
+- **Freighter Wallet** - Seamless Web3 integration
+- **Next.js & TypeScript** - Modern web framework
+
+## Hackathon Track
+
+This project was built for the **Reflector Network Oracle Track** of the Stellar Hackathon 2024. We leverage Reflector's decentralized oracle infrastructure to provide reliable, manipulation-resistant price feeds for automated trading protection.
 
 ---
 
