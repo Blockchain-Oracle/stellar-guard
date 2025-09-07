@@ -34,20 +34,14 @@ const TESTNET_ASSETS: Record<string, string> = {
 export const getUserBalances = async (userAddress: string): Promise<PortfolioAsset[]> => {
   try {
     const server = getServer();
-    console.log('Fetching account for:', userAddress);
     const account = await server.getAccount(userAddress);
-    console.log('Account response:', account);
     
     const portfolioAssets: PortfolioAsset[] = [];
     
     // Check if balances exist and is an array
     if (!account || !account.balances || !Array.isArray(account.balances)) {
-      console.warn('No balances found for account:', userAddress);
-      console.log('Account object:', account);
       return [];
     }
-    
-    console.log('Found balances:', account.balances.length);
     
     // Process each balance
     for (const balance of account.balances) {
@@ -122,11 +116,8 @@ export const getUserBalances = async (userAddress: string): Promise<PortfolioAss
     
     return portfolioAssets;
   } catch (error: any) {
-    console.error('Error fetching user balances:', error);
-    
     // If account not found on network, return empty array
     if (error?.response?.status === 404) {
-      console.log('Account not found on network - returning empty portfolio');
       return [];
     }
     
