@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/logo.png" alt="Stellar Guard Logo" width="500" />
+  <img src="public/logo.png" alt="Stellar Guard Logo" width="350" />
 </div>
 
 # Stellar Guard Frontend

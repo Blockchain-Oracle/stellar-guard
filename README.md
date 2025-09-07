@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="frontend-v2/public/logo.png" alt="Stellar Guard Logo" width="600" />
+  <img src="images/logo.png" alt="Stellar Guard Logo" width="400" />
   
   # Stellar Guard - Your 24/7 Trading Bodyguard
   
