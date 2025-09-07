@@ -154,10 +154,10 @@ export const getTelegramInstructions = (): string[] => {
   const botUsername = getTelegramBotUsername();
   
   return [
-    `1. Click "Open in Telegram" below or search for @${botUsername}`,
-    `2. Start a chat with the bot by clicking "START" button`,
-    `3. The bot will immediately reply with your User ID (Chat ID)`,
-    `4. Copy the User ID number (e.g., 123456789)`,
-    `5. Paste it in the field below and click "Verify & Connect"`,
+    `1. First, get your User ID from @userinfobot (click the tip above)`,
+    `2. Copy your User ID number (e.g., 123456789)`,
+    `3. Click "Open in Telegram" below to open @${botUsername}`,
+    `4. Start a chat with StellarGuard Bot and send your User ID`,
+    `5. Paste your User ID in the field below and click "Verify & Connect"`,
   ];
 };

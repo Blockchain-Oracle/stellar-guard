@@ -225,6 +225,23 @@ export function TelegramSubscription() {
               </div>
             )}
             
+            {/* Helper to get User ID */}
+            <div className="bg-blue-900/20 rounded-lg p-3 border border-blue-500/30">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-blue-400 font-mono">💡 TIP:</span>
+                <span className="text-gray-300 font-mono">Need your User ID?</span>
+              </div>
+              <a
+                href="https://t.me/userinfobot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition font-mono text-sm mt-2 underline decoration-dotted underline-offset-4"
+              >
+                Get it from @userinfobot
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+            
             {/* User ID Input */}
             <div className="space-y-2">
               <label className="text-sm text-gray-400 font-mono">
