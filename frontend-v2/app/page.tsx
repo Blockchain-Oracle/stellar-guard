@@ -6,6 +6,7 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from "@/component
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Shield, Zap, TrendingUp, Users, DollarSign, Lock, Activity, BarChart3, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { NeonCard } from "@/components/neon-card"
 import { CyberButton } from "@/components/cyber-button"
 import { GlitchText } from "@/components/glitch-text"
@@ -82,10 +83,14 @@ export default function HomePage() {
               <span>POWERED_BY_REFLECTOR_ORACLE</span>
             </div>
             
-            <div className="space-y-4">
-              <GlitchText
-                text="STELLAR_GUARD"
-                className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent"
+            <div className="space-y-6">
+              <Image 
+                src="/logo.png" 
+                alt="Stellar Guard" 
+                width={600} 
+                height={150} 
+                className="mx-auto object-contain"
+                priority
               />
               <GlitchText text="PROTECTION_PROTOCOL.EXE" className="text-2xl md:text-4xl font-mono text-cyan-400" />
             </div>

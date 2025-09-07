@@ -1,6 +1,10 @@
-# Stellar Guard - Your 24/7 Trading Bodyguard
-
-**Powered by Reflector Network Oracles** | Stop-Loss & Take-Profit Orders on Stellar
+<div align="center">
+  <img src="frontend-v2/public/logo.png" alt="Stellar Guard Logo" width="600" />
+  
+  # Stellar Guard - Your 24/7 Trading Bodyguard
+  
+  **Powered by Reflector Network Oracles** | Stop-Loss & Take-Profit Orders on Stellar
+</div>
 
 Ever woke up to find your crypto portfolio down 30% because you were sleeping? We built Stellar Guard to watch your trades while you live your life, using Reflector Network's professional price feeds to execute orders with institutional-grade accuracy.
 

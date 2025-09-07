@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Wallet, LogOut, User, ChevronDown, Shield } from "lucide-react"
+import { Wallet, LogOut, User, ChevronDown } from "lucide-react"
+import Image from "next/image"
 import { GlitchText } from "@/components/glitch-text"
 import { CyberButton } from "@/components/cyber-button"
 import { connectWallet, disconnect, getPublicKey, formatAddress, isWalletConnected } from "@/lib/stellar"
@@ -113,10 +114,15 @@ export default function Header() {
       <div className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-orange-600 via-orange-500 to-red-500 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(255,107,53,0.6)]">
-              <Shield className="text-white w-6 h-6" />
-            </div>
-            <div>
+            <Image 
+              src="/logo.png" 
+              alt="Stellar Guard" 
+              width={160} 
+              height={40} 
+              className="object-contain"
+              priority
+            />
+            <div className="hidden">
               <GlitchText text="STELLAR_GUARD" className="text-xl font-bold text-white" />
               <p className="text-xs text-orange-400 font-mono tracking-widest">PROTECTION_PROTOCOL.EXE</p>
             </div>

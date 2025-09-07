@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="public/logo.png" alt="Stellar Guard Logo" width="500" />
+</div>
+
 # Stellar Guard Frontend
 
 Cyberpunk trading interface for Stellar. Stop losses that actually work.
