@@ -37,6 +37,9 @@ export const createStopLossOrder = async (
 
     const server = getServer();
     const account = await server.getAccount(userAddress);
+    console.log('Account balance:', account.balances);
+    console.log('Account sequence:', account.sequence);
+    
     const contract = new StellarSdk.Contract(STOP_LOSS_CONTRACT);
     
     // Build the transaction based on order type
@@ -145,7 +148,22 @@ export const createStopLossOrder = async (
       return BigInt(1); // Default order ID
     } else if (result.status === 'ERROR') {
       console.error('Transaction error:', result);
-      throw new Error(`Transaction error: ${result.error || 'Unknown error'}`);
+      console.error('Error result details:', result.errorResult);
+      
+      // Try to extract more detailed error information
+      let errorMessage = 'Unknown error';
+      if (result.errorResult) {
+        try {
+          // Parse the XDR error result for more details
+          const errorXdr = result.errorResult;
+          console.error('Error XDR:', errorXdr);
+          errorMessage = `Transaction failed - Check console for detailed error`;
+        } catch (e) {
+          console.error('Could not parse error result:', e);
+        }
+      }
+      
+      throw new Error(`Transaction error: ${errorMessage}`);
     }
     
     console.error('Unexpected transaction status:', result.status);
