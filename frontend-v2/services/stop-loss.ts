@@ -298,7 +298,7 @@ export const executeOrder = async (userAddress: string, orderId: bigint): Promis
 
 // Check if order should be executed based on current price
 export const shouldExecuteOrder = async (order: StopLossOrder, currentPrice: number): Promise<boolean> => {
-  const stopPriceNum = Number(order.stopPrice) / Math.pow(10, 18);
+  const stopPriceNum = Number(order.stopPrice) / Math.pow(10, 7);
   
   switch (order.orderType) {
     case OrderType.StopLoss:

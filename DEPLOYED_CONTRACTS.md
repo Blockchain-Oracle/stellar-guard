@@ -15,8 +15,8 @@
 ## ✅ DEPLOYED CONTRACTS
 
 ### 1. Stop-Loss Contract (simple_stop_loss)
-- **Contract ID**: `CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM`
-- **Explorer Link**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM)
+- **Contract ID**: `CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX`
+- **Explorer Link**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX)
 - **Deployment TX**: `27789ef794e0cb47b81c331a861cdcd0b1000a15e65f22fce7a625623286eedb`
 - **Status**: ✅ DEPLOYED & TESTED
 - **Functions**:

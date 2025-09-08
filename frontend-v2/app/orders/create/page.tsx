@@ -94,6 +94,13 @@ export default function CreateOrderPage() {
       return
     }
 
+    // Check minimum amount (0.1 tokens with 7 decimals = 1_000_000)
+    const amountNum = parseFloat(amount)
+    if (amountNum < 0.1) {
+      alert('Minimum amount is 0.1 tokens')
+      return
+    }
+
     if (orderType !== OrderType.TrailingStop && (!stopPrice || parseFloat(stopPrice) <= 0)) {
       alert('Please enter a valid stop price')
       return
@@ -101,7 +108,7 @@ export default function CreateOrderPage() {
 
     setLoading(true)
     try {
-      // Convert to contract units (7 decimals for amount, 18 for price)
+      // Convert to contract units (7 decimals for both amount and price)
       const amountBigInt = BigInt(Math.floor(parseFloat(amount) * Math.pow(10, 7)))
       
       let stopPriceBigInt: bigint
@@ -109,7 +116,7 @@ export default function CreateOrderPage() {
         // For trailing stop, pass percentage as a small number
         stopPriceBigInt = BigInt(trailingPercent)
       } else {
-        stopPriceBigInt = BigInt(Math.floor(parseFloat(stopPrice) * Math.pow(10, 18)))
+        stopPriceBigInt = BigInt(Math.floor(parseFloat(stopPrice) * Math.pow(10, 7)))
       }
 
       // Pass the asset symbol to the contract
@@ -267,12 +274,42 @@ export default function CreateOrderPage() {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
+              placeholder="0.10"
+              min="0.1"
+              step="0.01"
               className="w-full bg-gray-900 border border-orange-500/30 rounded-lg px-4 py-3 font-mono text-white"
             />
             <p className="text-xs text-gray-400 font-mono mt-2">
-              Amount of {selectedAsset} to protect
+              Amount of {selectedAsset} to protect (minimum: 0.1)
             </p>
+            
+            {/* Quick amount buttons */}
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => setAmount("0.1")}
+                className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 rounded font-mono text-orange-400 border border-orange-500/30"
+              >
+                0.1
+              </button>
+              <button
+                onClick={() => setAmount("1")}
+                className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 rounded font-mono text-orange-400 border border-orange-500/30"
+              >
+                1.0
+              </button>
+              <button
+                onClick={() => setAmount("10")}
+                className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 rounded font-mono text-orange-400 border border-orange-500/30"
+              >
+                10
+              </button>
+              <button
+                onClick={() => setAmount("100")}
+                className="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 rounded font-mono text-orange-400 border border-orange-500/30"
+              >
+                100
+              </button>
+            </div>
             
             {amount && currentPrice && (
               <div className="mt-4 p-3 bg-gray-900/50 rounded-lg">
@@ -322,6 +359,7 @@ export default function CreateOrderPage() {
                 value={stopPrice}
                 onChange={(e) => setStopPrice(e.target.value)}
                 placeholder={getSuggestedStopPrice()}
+                step="0.01"
                 className="w-full bg-gray-900 border border-green-500/30 rounded-lg px-4 py-3 font-mono text-white"
               />
               

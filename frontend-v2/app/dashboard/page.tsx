@@ -252,7 +252,7 @@ function DashboardContent() {
                             Amount: {(Number(order.amount) / Math.pow(10, 7)).toFixed(2)}
                           </p>
                           <p className="text-sm text-gray-400 font-mono">
-                            Stop: {formatPrice(Number(order.stopPrice) / Math.pow(10, 18))}
+                            Stop: {formatPrice(Number(order.stopPrice) / Math.pow(10, 7))}
                           </p>
                         </div>
                         <div className="text-right">

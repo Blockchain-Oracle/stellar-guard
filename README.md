@@ -22,7 +22,7 @@ Ever woke up to find your crypto portfolio down 30% because you were sleeping? W
 ## Live on Stellar Testnet
 
 **Smart Contracts:** [View on Stellar Expert](https://stellar.expert/explorer/testnet)
-- Stop-Loss Engine: [`CDSKXUU...6ZP5EUMM`](https://stellar.expert/explorer/testnet/contract/CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM)
+- Stop-Loss Engine: [`CB7MN5A...NVBVQHOX`](https://stellar.expert/explorer/testnet/contract/CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX)
 - Oracle Router: [`CB3AWIGZ...TFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN)
 
 ## Watch It In Action
@@ -274,7 +274,7 @@ All contracts are live on Stellar's test network. You can view them on [Stellar 
 
 | Contract | Address | What it does |
 |----------|---------|--------------|
-| Stop-Loss Engine | [`CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM`](https://stellar.expert/explorer/testnet/contract/CDSKXUU5BDMKMLDS4T3PL6RUX7XLVG3DW7ZSV7LL5LS2WJVJ6ZP5EUMM) | Handles all your trading orders |
+| Stop-Loss Engine | [`CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX`](https://stellar.expert/explorer/testnet/contract/CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX) | Handles all your trading orders |
 | Oracle Router | [`CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN) | Gets accurate prices from markets |
 | Liquidation Monitor | [`CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW`](https://stellar.expert/explorer/testnet/contract/CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW) | Watches collateral health |
 

@@ -303,7 +303,7 @@ function StopLossContent() {
                         {(Number(order.amount) / Math.pow(10, 7)).toFixed(2)}
                       </td>
                       <td className="text-right py-3 px-4 font-mono text-sm">
-                        {formatPrice(Number(order.stopPrice) / Math.pow(10, 18))}
+                        {formatPrice(Number(order.stopPrice) / Math.pow(10, 7))}
                       </td>
                       <td className="text-center py-3 px-4">
                         <div className="flex items-center justify-center gap-2">
