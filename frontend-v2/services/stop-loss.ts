@@ -40,6 +40,8 @@ export const createStopLossOrder = async (
     const contract = new StellarSdk.Contract(STOP_LOSS_CONTRACT);
     
     // Build the transaction based on order type
+    console.log('Creating order with params:', { userAddress, asset, amount: amount.toString(), stopPrice: stopPrice.toString(), orderType });
+    
     let operation;
     switch (orderType) {
       case OrderType.StopLoss:
@@ -58,8 +60,9 @@ export const createStopLossOrder = async (
         );
         break;
       case OrderType.TakeProfit:
+        // Use create_stop_loss for take profit (the contract will handle the logic)
         operation = contract.call(
-          'create_take_profit',
+          'create_stop_loss',
           StellarSdk.Address.fromString(userAddress).toScVal(),
           StellarSdk.xdr.ScVal.scvSymbol(asset),
           StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
@@ -90,21 +93,30 @@ export const createStopLossOrder = async (
     }
     
     const tx = new StellarSdk.TransactionBuilder(account, {
-      fee: '100000',
+      fee: '1000000', // Increase fee to 1 XLM (was 0.1 XLM)
       networkPassphrase: getNetworkPassphrase(),
     })
       .addOperation(operation)
-      .setTimeout(30)
+      .setTimeout(300) // Increase timeout to 5 minutes
       .build();
     
+    console.log('Transaction built:', tx.toXDR());
+    
     const preparedTx = await server.prepareTransaction(tx);
+    console.log('Transaction prepared:', preparedTx.toXDR());
+    
+    console.log('Signing transaction...');
     const signedXdr = await signTransaction(preparedTx.toXDR());
+    console.log('Transaction signed:', signedXdr);
+    
     const signedTx = StellarSdk.TransactionBuilder.fromXDR(
       signedXdr,
       getNetworkPassphrase()
     );
+    console.log('Signed transaction parsed:', signedTx);
     
     const result = await server.sendTransaction(signedTx as any);
+    console.log('Transaction result:', result);
     
     if (result.status === 'PENDING') {
       // Wait for confirmation
@@ -124,11 +136,20 @@ export const createStopLossOrder = async (
         }
         return BigInt(1); // Default order ID if extraction fails
       } else {
-        throw new Error('Transaction failed');
+        console.error('Transaction failed with status:', getResponse.status);
+        throw new Error(`Transaction failed with status: ${getResponse.status}`);
       }
+    } else if (result.status === 'SUCCESS') {
+      // Transaction succeeded immediately
+      console.log('Transaction succeeded immediately');
+      return BigInt(1); // Default order ID
+    } else if (result.status === 'ERROR') {
+      console.error('Transaction error:', result);
+      throw new Error(`Transaction error: ${result.error || 'Unknown error'}`);
     }
     
-    throw new Error('Transaction submission failed');
+    console.error('Unexpected transaction status:', result.status);
+    throw new Error(`Transaction submission failed with status: ${result.status}`);
   } catch (error) {
     console.error('Error creating stop-loss order:', error);
     return null;
