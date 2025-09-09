@@ -91,7 +91,7 @@ export const createStopLossOrder = async (
     // First simulate to ensure transaction is valid, then prepare
     // This works around the oracle call issue
     const simResponse = await server.simulateTransaction(tx);
-    if (simResponse.error) {
+    if ('error' in simResponse && simResponse.error) {
       throw new Error(`Simulation failed: ${simResponse.error}`);
     }
     
@@ -126,10 +126,11 @@ export const createStopLossOrder = async (
           }
         } catch (parseError) {
           console.log('Could not parse return value:', parseError);
-          // Try to extract from _value._value for UnsignedHyper
+          // Try to extract from internal structure for UnsignedHyper
           try {
-            if (getResponse.returnValue?._value?._value !== undefined) {
-              return BigInt(getResponse.returnValue._value._value);
+            const returnValue: any = getResponse.returnValue;
+            if (returnValue?._value?._value !== undefined) {
+              return BigInt(returnValue._value._value);
             }
           } catch (e) {
             console.log('Could not extract value:', e);
