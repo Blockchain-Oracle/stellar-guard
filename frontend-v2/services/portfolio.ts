@@ -95,7 +95,7 @@ export const getUserBalances = async (userAddress: string): Promise<PortfolioAss
           source = 'crypto'; // These are in the external oracle
         }
         
-        const price = await getCurrentPrice(asset, source);
+        const price = await getCurrentPrice(asset);
         return { asset, price: price || 0 };
       } catch (error) {
         console.error(`Error fetching price for ${asset}:`, error);

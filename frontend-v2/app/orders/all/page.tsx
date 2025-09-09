@@ -13,43 +13,55 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { 
-  Plus, 
   Loader2, 
   TrendingDown, 
   TrendingUp, 
   AlertCircle,
   RefreshCw,
-  Trash2
+  Users,
+  Activity
 } from "lucide-react";
 import Link from "next/link";
-import { isWalletConnected, getPublicKey } from "@/lib/stellar";
-import { getUserOrders, cancelOrder, StopLossOrder, OrderType } from "@/services/stop-loss";
+import { getAllOrders, StopLossOrder, OrderType } from "@/services/stop-loss";
 import { getCurrentPrice } from "@/services/oracle";
+import { formatAddress } from "@/lib/stellar";
 import toast from "react-hot-toast";
 
-export default function OrdersPage() {
+export default function AllOrdersPage() {
   const [orders, setOrders] = useState<StopLossOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [prices, setPrices] = useState<{ [key: string]: number }>({});
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    activeOrders: 0,
+    uniqueUsers: 0,
+    totalVolume: BigInt(0)
+  });
 
-  const fetchOrders = async (showRefreshing = false) => {
+  const fetchAllOrders = async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
     try {
-      if (!isWalletConnected()) {
-        toast.error("Please connect your wallet to view orders");
-        return;
-      }
-
-      const userAddress = await getPublicKey();
-      console.log('Fetching orders for:', userAddress);
+      console.log('Fetching all orders from contract...');
       
-      const userOrders = await getUserOrders(userAddress);
-      console.log('Orders fetched:', userOrders);
-      setOrders(userOrders);
+      const allOrders = await getAllOrders();
+      console.log('All orders fetched:', allOrders);
+      setOrders(allOrders);
+
+      // Calculate statistics
+      const uniqueUsersSet = new Set(allOrders.map(o => o.user));
+      const activeOrdersCount = allOrders.filter(o => o.status === 'active').length;
+      const totalVolume = allOrders.reduce((sum, o) => sum + o.amount, BigInt(0));
+      
+      setStats({
+        totalOrders: allOrders.length,
+        activeOrders: activeOrdersCount,
+        uniqueUsers: uniqueUsersSet.size,
+        totalVolume
+      });
 
       // Fetch current prices for all unique assets
-      const uniqueAssets = [...new Set(userOrders.map(o => o.asset))];
+      const uniqueAssets = [...new Set(allOrders.map(o => o.asset))];
       const pricePromises = uniqueAssets.map(async (asset) => {
         try {
           const price = await getCurrentPrice(asset);
@@ -67,8 +79,8 @@ export default function OrdersPage() {
       });
       setPrices(priceMap);
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error("Failed to load your orders. Please try again.");
+      console.error('Error fetching all orders:', error);
+      toast.error("Failed to load orders. Please try again.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -76,25 +88,11 @@ export default function OrdersPage() {
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchAllOrders();
+    // Refresh every 30 seconds
+    const interval = setInterval(() => fetchAllOrders(), 30000);
+    return () => clearInterval(interval);
   }, []);
-
-  const handleCancelOrder = async (orderId: bigint) => {
-    try {
-      const userAddress = await getPublicKey();
-      const success = await cancelOrder(userAddress, orderId);
-      
-      if (success) {
-        toast.success(`Order #${orderId} has been cancelled successfully.`);
-        fetchOrders(true);
-      } else {
-        toast.error("Failed to cancel the order. Please try again.");
-      }
-    } catch (error) {
-      console.error('Error cancelling order:', error);
-      toast.error("An error occurred while cancelling the order.");
-    }
-  };
 
   const formatAmount = (amount: bigint) => {
     return (Number(amount) / Math.pow(10, 7)).toFixed(4);
@@ -103,6 +101,16 @@ export default function OrdersPage() {
   const formatPrice = (price: bigint | number) => {
     const priceNum = typeof price === 'bigint' ? Number(price) : price;
     return (priceNum / Math.pow(10, 7)).toFixed(2);
+  };
+
+  const formatVolume = (volume: bigint) => {
+    const volumeNum = Number(volume) / Math.pow(10, 7);
+    if (volumeNum > 1000000) {
+      return `${(volumeNum / 1000000).toFixed(2)}M`;
+    } else if (volumeNum > 1000) {
+      return `${(volumeNum / 1000).toFixed(2)}K`;
+    }
+    return volumeNum.toFixed(2);
   };
 
   const getOrderTypeIcon = (orderType: OrderType) => {
@@ -131,16 +139,6 @@ export default function OrdersPage() {
     }
   };
 
-  const calculateDistance = (currentPrice: number, stopPrice: bigint, orderType: OrderType) => {
-    const stopPriceNum = Number(stopPrice) / Math.pow(10, 7);
-    const distance = ((currentPrice - stopPriceNum) / currentPrice) * 100;
-    
-    if (orderType === OrderType.TakeProfit) {
-      return -distance; // Invert for take profit
-    }
-    return distance;
-  };
-
   if (loading) {
     return (
       <div className="container mx-auto p-6 flex items-center justify-center min-h-[400px]">
@@ -153,21 +151,21 @@ export default function OrdersPage() {
     <div className="container mx-auto p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Your Orders</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">All Orders</h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-2">
-            Manage your stop-loss, take-profit, and trailing stop orders
+            Complete overview of all stop-loss orders in the contract
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/orders/all">
+          <Link href="/orders">
             <Button variant="outline">
-              View All Orders
+              Your Orders
             </Button>
           </Link>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => fetchOrders(true)}
+            onClick={() => fetchAllOrders(true)}
             disabled={refreshing}
           >
             {refreshing ? (
@@ -177,64 +175,103 @@ export default function OrdersPage() {
             )}
             Refresh
           </Button>
-          <Link href="/orders/create">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Order
-            </Button>
-          </Link>
         </div>
       </div>
 
-      {orders.length === 0 ? (
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
-            <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4" />
-            <h3 className="text-base sm:text-lg font-semibold mb-2">No orders yet</h3>
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 text-center">
-              Create your first stop-loss order to protect your assets
-            </p>
-            <Link href="/orders/create">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Order
-              </Button>
-            </Link>
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total Orders</p>
+                <p className="text-xl sm:text-2xl font-bold">{stats.totalOrders}</p>
+              </div>
+              <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground hidden sm:block" />
+            </div>
           </CardContent>
         </Card>
-      ) : (
+        
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Active Orders ({orders.filter(o => o.status === 'active').length})</CardTitle>
-            <CardDescription className="text-sm">
-              Total orders: {orders.length}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0 sm:p-6">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Active Orders</p>
+                <p className="text-xl sm:text-2xl font-bold">{stats.activeOrders}</p>
+              </div>
+              <TrendingDown className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 hidden sm:block" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Unique Users</p>
+                <p className="text-xl sm:text-2xl font-bold">{stats.uniqueUsers}</p>
+              </div>
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 hidden sm:block" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total Volume</p>
+                <p className="text-xl sm:text-2xl font-bold">{formatVolume(stats.totalVolume)}</p>
+              </div>
+              <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 hidden sm:block" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Orders Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg sm:text-xl">Order Book</CardTitle>
+          <CardDescription className="text-sm">
+            All orders across all users
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0 sm:p-6">
+          {orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12">
+              <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold mb-2">No orders found</h3>
+              <p className="text-sm sm:text-base text-muted-foreground text-center">
+                The contract doesn't have any orders yet
+              </p>
+            </div>
+          ) : (
             <div className="overflow-x-auto">
               <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
+                  <TableHead>User</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Asset</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Stop Price</TableHead>
                   <TableHead>Current Price</TableHead>
-                  <TableHead>Distance</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {orders.map((order) => {
                   const currentPrice = prices[order.asset] || 0;
-                  const distance = calculateDistance(currentPrice, order.stopPrice, order.orderType);
                   
                   return (
                     <TableRow key={order.id.toString()}>
                       <TableCell className="font-mono">#{order.id.toString()}</TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {formatAddress(order.user)}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {getOrderTypeIcon(order.orderType)}
@@ -249,27 +286,9 @@ export default function OrdersPage() {
                       <TableCell>
                         {currentPrice > 0 ? `$${currentPrice.toFixed(2)}` : '-'}
                       </TableCell>
-                      <TableCell>
-                        {currentPrice > 0 && (
-                          <span className={distance > 10 ? 'text-green-500' : distance < 5 ? 'text-red-500' : ''}>
-                            {distance.toFixed(2)}%
-                          </span>
-                        )}
-                      </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                       <TableCell>
                         {new Date(order.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        {order.status === 'active' && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleCancelOrder(order.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -277,9 +296,9 @@ export default function OrdersPage() {
               </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

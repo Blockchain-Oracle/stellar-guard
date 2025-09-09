@@ -151,7 +151,7 @@ function AlertsContent() {
         switch (alert.type) {
           case 'price_above':
           case 'price_below':
-            const price = await getCurrentPrice(alert.asset, 'crypto')
+            const price = await getCurrentPrice(alert.asset)
             currentValue = price || 0
             if (alert.type === 'price_above') {
               shouldTrigger = currentValue > alert.threshold
@@ -161,15 +161,15 @@ function AlertsContent() {
             break
             
           case 'stablecoin_peg':
-            const deviation = await checkStablecoinPeg(alert.asset)
-            currentValue = Math.abs(deviation || 0)
+            const pegResult = await checkStablecoinPeg(alert.asset)
+            currentValue = pegResult.deviation
             shouldTrigger = currentValue > alert.threshold
             break
             
           case 'arbitrage':
             // Check cross-exchange price difference
             const crossPrice = await getCrossPrice(alert.asset, 'USDC')
-            const spotPrice = await getCurrentPrice(alert.asset, 'crypto')
+            const spotPrice = await getCurrentPrice(alert.asset)
             if (crossPrice && spotPrice) {
               currentValue = Math.abs((crossPrice - spotPrice) / spotPrice * 10000) // basis points
               shouldTrigger = currentValue > alert.threshold

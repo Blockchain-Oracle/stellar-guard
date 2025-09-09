@@ -14,18 +14,26 @@
 
 ## ✅ DEPLOYED CONTRACTS
 
-### 1. Stop-Loss Contract (simple_stop_loss)
-- **Contract ID**: `CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX`
-- **Explorer Link**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX)
-- **Deployment TX**: `27789ef794e0cb47b81c331a861cdcd0b1000a15e65f22fce7a625623286eedb`
-- **Status**: ✅ DEPLOYED & TESTED
+### 1. Stop-Loss Contract (Updated v2 with SDK v23.0.2)
+- **Contract ID**: `CC2VFR2DSZ4DYB52YXTTDHUMFF6SFN3OMRZH6PAKN7K5BH22PPWOGWFL`
+- **Explorer Link**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CC2VFR2DSZ4DYB52YXTTDHUMFF6SFN3OMRZH6PAKN7K5BH22PPWOGWFL)
+- **Deployment TX**: `dee0332475ff405cf155fd604e80f67f5e0dc3cd24b259ce9aa915dc13160d00`
+- **Status**: ✅ DEPLOYED & INITIALIZED (Latest)
+- **Previous Contract**: `CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX` (deprecated)
 - **Functions**:
-  - `initialize(oracle_address)` - Set oracle address
+  - `initialize(admin, oracle_address, fee_recipient)` - Initialize contract
   - `create_stop_loss(owner, asset, amount, stop_price)` - Create order
-  - `get_order(order_id)` - Get order details
+  - `create_trailing_stop(owner, asset, amount, trailing_percent)` - Create trailing stop
+  - `create_oco_order(owner, asset, amount, stop_price, take_profit_price)` - Create OCO order
+  - `get_order_details(order_id)` - Get order details
   - `get_user_orders(user)` - Get user's orders
+  - `get_all_orders()` - Get all order IDs (NEW)
+  - `get_order_count()` - Get total order count (NEW)
+  - `get_orders_paginated(start, limit)` - Get orders with pagination (NEW)
+  - `get_active_orders()` - Get only active orders (NEW)
+  - `get_orders_by_status(status)` - Get orders by status (NEW)
   - `cancel_order(owner, order_id)` - Cancel order
-  - `check_and_execute(order_id, current_price)` - Execute if triggered
+  - `check_and_execute(order_id)` - Execute if triggered
 
 ### 2. Liquidation Contract (working_liquidation)
 - **Contract ID**: `CACBFLZ2IDRV45WZ2SYZ27C5ILPJTP6TUS5PQDXZBPNXCOHOP7CPLRJW`

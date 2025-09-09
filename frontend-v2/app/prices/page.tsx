@@ -84,16 +84,13 @@ export default function PricesPage() {
       setForexPrices(forexData)
       
       // Load oracle statistics
-      const [cryptoStats, stellarStats, forexStats] = await Promise.all([
-        getOracleStats('crypto'),
-        getOracleStats('stellar'),
-        getOracleStats('forex')
-      ])
+      const stats = await getOracleStats()
       
+      // Use the same stats for all oracle types (since we have a single stats object)
       setOracleStatus({
-        crypto: cryptoStats,
-        stellar: stellarStats,
-        forex: forexStats
+        crypto: stats,
+        stellar: stats,
+        forex: stats
       })
       
       setLoading(false)
@@ -121,9 +118,9 @@ export default function PricesPage() {
       try {
         console.log(`[loadPricesForAssets] Fetching prices for ${asset} (${source})...`)
         const [spot, twap5, twap10] = await Promise.all([
-          getCurrentPrice(asset, source),
-          getTWAPPrice(asset, 5, source),
-          getTWAPPrice(asset, 10, source)
+          getCurrentPrice(asset),
+          getTWAPPrice(asset, 5),
+          getTWAPPrice(asset, 10)
         ])
         
         console.log(`[loadPricesForAssets] Results for ${asset}:`, {

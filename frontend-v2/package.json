@@ -20,7 +20,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.1.5",
     "@stellar/freighter-api": "^2.0.0",
-    "@stellar/stellar-sdk": "^13.0.0",
+    "@stellar/stellar-sdk": "^14.1.1",
     "@tanstack/react-query": "^5.86.0",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.0",

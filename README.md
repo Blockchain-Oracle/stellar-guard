@@ -22,7 +22,7 @@ Ever woke up to find your crypto portfolio down 30% because you were sleeping? W
 ## Live on Stellar Testnet
 
 **Smart Contracts:** [View on Stellar Expert](https://stellar.expert/explorer/testnet)
-- Stop-Loss Engine: [`CB7MN5A...NVBVQHOX`](https://stellar.expert/explorer/testnet/contract/CB7MN5A7IOEBR6OJS2BU7BDUGAGX2TPN2VCSQOWYGUV7WAVUVNBVQHOX)
+- Stop-Loss Engine: [`CC2VFR2D...PPWOGWFL`](https://stellar.expert/explorer/testnet/contract/CC2VFR2DSZ4DYB52YXTTDHUMFF6SFN3OMRZH6PAKN7K5BH22PPWOGWFL)
 - Oracle Router: [`CB3AWIGZ...TFF5L3FN`](https://stellar.expert/explorer/testnet/contract/CB3AWIGZ66E3DNPWY22T2RRKW2VYYKQNJOYTT56FD4LOVKVGTFF5L3FN)
 
 ## Watch It In Action

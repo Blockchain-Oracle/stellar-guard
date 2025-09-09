@@ -69,9 +69,9 @@ function StopLossContent() {
       
       // Load current prices for comparison
       const [btcPrice, ethPrice, xlmPrice] = await Promise.all([
-        getCurrentPrice('BTC', 'crypto'),
-        getCurrentPrice('ETH', 'crypto'),
-        getCurrentPrice('XLM', 'stellar')
+        getCurrentPrice('BTC'),
+        getCurrentPrice('ETH'),
+        getCurrentPrice('XLM')
       ])
       
       setPrices({

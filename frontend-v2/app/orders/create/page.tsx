@@ -69,8 +69,8 @@ export default function CreateOrderPage() {
       const type = asset?.type || 'crypto'
       
       const [spotPrice, twap] = await Promise.all([
-        getCurrentPrice(selectedAsset, type),
-        getTWAPPrice(selectedAsset, 5, type)
+        getCurrentPrice(selectedAsset),
+        getTWAPPrice(selectedAsset, 5)
       ])
       
       setCurrentPrice(spotPrice)

@@ -59,6 +59,7 @@ pub enum OrderType {
 pub enum DataKey {
     Orders,
     OrderCounter,
+    AllOrderIds,  // New: Track all order IDs
     UserOrders(Address),
     Config,
     Admin,
@@ -457,6 +458,80 @@ impl StopLossContract {
         Self::get_order(&env, order_id)
     }
     
+    // NEW: Get all order IDs
+    pub fn get_all_orders(env: Env) -> Vec<u64> {
+        env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env))
+    }
+    
+    // NEW: Get total order count
+    pub fn get_order_count(env: Env) -> u64 {
+        let all_orders: Vec<u64> = env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env));
+        all_orders.len() as u64
+    }
+    
+    // NEW: Get orders with pagination
+    pub fn get_orders_paginated(env: Env, start: u64, limit: u32) -> Vec<StopLossOrder> {
+        let all_order_ids: Vec<u64> = env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env));
+        
+        let mut result = Vec::new(&env);
+        let end = ((start + limit as u64) as usize).min(all_order_ids.len() as usize);
+        let start_idx = (start as usize).min(all_order_ids.len() as usize);
+        
+        for i in start_idx..end {
+            if let Some(order_id) = all_order_ids.get(i as u32) {
+                let order = Self::get_order(&env, order_id);
+                result.push_back(order);
+            }
+        }
+        
+        result
+    }
+    
+    // NEW: Get only active orders
+    pub fn get_active_orders(env: Env) -> Vec<u64> {
+        let all_order_ids: Vec<u64> = env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env));
+        
+        let mut active_orders = Vec::new(&env);
+        for order_id in all_order_ids.iter() {
+            let order = Self::get_order(&env, order_id);
+            if order.status == OrderStatus::Active {
+                active_orders.push_back(order_id);
+            }
+        }
+        
+        active_orders
+    }
+    
+    // NEW: Get orders by status
+    pub fn get_orders_by_status(env: Env, status: OrderStatus) -> Vec<u64> {
+        let all_order_ids: Vec<u64> = env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env));
+        
+        let mut filtered_orders = Vec::new(&env);
+        for order_id in all_order_ids.iter() {
+            let order = Self::get_order(&env, order_id);
+            if order.status == status {
+                filtered_orders.push_back(order_id);
+            }
+        }
+        
+        filtered_orders
+    }
+    
     // Internal helper functions
     fn get_next_order_id(env: &Env) -> u64 {
         let counter: u64 = env.storage()
@@ -511,6 +586,31 @@ impl StopLossContract {
         
         orders.set(order_id, order.clone());
         env.storage().persistent().set(&DataKey::Orders, &orders);
+        
+        // Add to all orders list if it's a new order
+        let mut all_order_ids: Vec<u64> = env.storage()
+            .persistent()
+            .get(&DataKey::AllOrderIds)
+            .unwrap_or(Vec::new(&env));
+        
+        // Check if order_id already exists to avoid duplicates
+        let mut exists = false;
+        for existing_id in all_order_ids.iter() {
+            if existing_id == order_id {
+                exists = true;
+                break;
+            }
+        }
+        
+        if !exists {
+            all_order_ids.push_back(order_id);
+            env.storage().persistent().set(&DataKey::AllOrderIds, &all_order_ids);
+            
+            // Extend TTL for all orders list
+            env.storage()
+                .persistent()
+                .extend_ttl(&DataKey::AllOrderIds, 100, MAX_PERSISTENT_TTL);
+        }
         
         // Extend TTL
         env.storage()

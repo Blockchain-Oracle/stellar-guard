@@ -70,9 +70,9 @@ function DashboardContent() {
       
       // Load prices in parallel
       const [btcPrice, ethPrice, xlmPrice, usdcPeg] = await Promise.all([
-        getCurrentPrice('BTC', 'crypto'),
-        getCurrentPrice('ETH', 'crypto'),
-        getCurrentPrice('XLM', 'stellar'),
+        getCurrentPrice('BTC'),
+        getCurrentPrice('ETH'),
+        getCurrentPrice('XLM'),
         checkStablecoinPeg('USDC')
       ])
 
@@ -80,7 +80,7 @@ function DashboardContent() {
         BTC: btcPrice || 0,
         ETH: ethPrice || 0,
         XLM: xlmPrice || 0,
-        USDC_PEG: usdcPeg || 0
+        USDC_PEG: usdcPeg?.deviation || 0
       })
 
       // Load user orders and portfolio
