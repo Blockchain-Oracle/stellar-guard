@@ -37,45 +37,29 @@ export const createStopLossOrder = async (
 
     const server = getServer();
     const account = await server.getAccount(userAddress);
-    console.log('Account balance:', account.balances);
-    console.log('Account sequence:', account.sequence);
-    
     const contract = new StellarSdk.Contract(STOP_LOSS_CONTRACT);
     
     // Build the transaction based on order type
-    console.log('Creating order with params:', { userAddress, asset, amount: amount.toString(), stopPrice: stopPrice.toString(), orderType });
-    
     let operation;
     switch (orderType) {
       case OrderType.StopLoss:
         operation = contract.call(
           'create_stop_loss',
           StellarSdk.Address.fromString(userAddress).toScVal(),
-          StellarSdk.xdr.ScVal.scvSymbol(asset),
-          StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
-            hi: StellarSdk.xdr.Int64.fromString((amount >> 64n).toString()),
-            lo: StellarSdk.xdr.Uint64.fromString((amount & 0xffffffffffffffffn).toString()),
-          })),
-          StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
-            hi: StellarSdk.xdr.Int64.fromString((stopPrice >> 64n).toString()),
-            lo: StellarSdk.xdr.Uint64.fromString((stopPrice & 0xffffffffffffffffn).toString()),
-          }))
+          StellarSdk.nativeToScVal(asset, { type: 'symbol' }),
+          StellarSdk.nativeToScVal(amount, { type: 'i128' }),
+          StellarSdk.nativeToScVal(stopPrice, { type: 'i128' })
         );
         break;
       case OrderType.TakeProfit:
-        // Use create_stop_loss for take profit (the contract will handle the logic)
+        // For take profit only, we use create_stop_loss with inverted logic
+        // The contract will sell when price rises above the target
         operation = contract.call(
           'create_stop_loss',
           StellarSdk.Address.fromString(userAddress).toScVal(),
-          StellarSdk.xdr.ScVal.scvSymbol(asset),
-          StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
-            hi: StellarSdk.xdr.Int64.fromString((amount >> 64n).toString()),
-            lo: StellarSdk.xdr.Uint64.fromString((amount & 0xffffffffffffffffn).toString()),
-          })),
-          StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
-            hi: StellarSdk.xdr.Int64.fromString((stopPrice >> 64n).toString()),
-            lo: StellarSdk.xdr.Uint64.fromString((stopPrice & 0xffffffffffffffffn).toString()),
-          }))
+          StellarSdk.nativeToScVal(asset, { type: 'symbol' }),
+          StellarSdk.nativeToScVal(amount, { type: 'i128' }),
+          StellarSdk.nativeToScVal(stopPrice, { type: 'i128' })
         );
         break;
       case OrderType.TrailingStop:
@@ -83,43 +67,44 @@ export const createStopLossOrder = async (
         operation = contract.call(
           'create_trailing_stop',
           StellarSdk.Address.fromString(userAddress).toScVal(),
-          StellarSdk.xdr.ScVal.scvSymbol(asset),
-          StellarSdk.xdr.ScVal.scvI128(new StellarSdk.xdr.Int128Parts({
-            hi: StellarSdk.xdr.Int64.fromString((amount >> 64n).toString()),
-            lo: StellarSdk.xdr.Uint64.fromString((amount & 0xffffffffffffffffn).toString()),
-          })),
-          StellarSdk.xdr.ScVal.scvU32(Number(stopPrice)) // Trailing percentage as u32
+          StellarSdk.nativeToScVal(asset, { type: 'symbol' }),
+          StellarSdk.nativeToScVal(amount, { type: 'i128' }),
+          StellarSdk.nativeToScVal(Number(stopPrice), { type: 'u32' }) // Trailing percentage as u32
         );
         break;
+      case OrderType.OCO:
+        // OCO needs both stop loss and take profit prices
+        // For now, throw an error as we need both prices
+        throw new Error('OCO orders require both stop loss and take profit prices');
       default:
         throw new Error(`Unsupported order type: ${orderType}`);
     }
     
     const tx = new StellarSdk.TransactionBuilder(account, {
-      fee: '1000000', // Increase fee to 1 XLM (was 0.1 XLM)
+      fee: '100000',
       networkPassphrase: getNetworkPassphrase(),
     })
       .addOperation(operation)
-      .setTimeout(300) // Increase timeout to 5 minutes
+      .setTimeout(30)
       .build();
     
-    console.log('Transaction built:', tx.toXDR());
+    // First simulate to ensure transaction is valid, then prepare
+    // This works around the oracle call issue
+    const simResponse = await server.simulateTransaction(tx);
+    if (simResponse.error) {
+      throw new Error(`Simulation failed: ${simResponse.error}`);
+    }
     
+    // Use the standard prepareTransaction method after simulation succeeds
     const preparedTx = await server.prepareTransaction(tx);
-    console.log('Transaction prepared:', preparedTx.toXDR());
     
-    console.log('Signing transaction...');
     const signedXdr = await signTransaction(preparedTx.toXDR());
-    console.log('Transaction signed:', signedXdr);
-    
     const signedTx = StellarSdk.TransactionBuilder.fromXDR(
       signedXdr,
       getNetworkPassphrase()
     );
-    console.log('Signed transaction parsed:', signedTx);
     
     const result = await server.sendTransaction(signedTx as any);
-    console.log('Transaction result:', result);
     
     if (result.status === 'PENDING') {
       // Wait for confirmation
@@ -131,43 +116,33 @@ export const createStopLossOrder = async (
         getResponse = await server.getTransaction(hash);
       }
       
-      if (getResponse.status === 'SUCCESS' && getResponse.returnValue) {
+      if (getResponse.status === 'SUCCESS') {
         // Extract order ID from return value
-        const returnVal = getResponse.returnValue;
-        if (returnVal && typeof returnVal === 'object' && 'u64' in returnVal) {
-          return BigInt((returnVal as any).u64);
-        }
-        return BigInt(1); // Default order ID if extraction fails
-      } else {
-        console.error('Transaction failed with status:', getResponse.status);
-        throw new Error(`Transaction failed with status: ${getResponse.status}`);
-      }
-    } else if (result.status === 'SUCCESS') {
-      // Transaction succeeded immediately
-      console.log('Transaction succeeded immediately');
-      return BigInt(1); // Default order ID
-    } else if (result.status === 'ERROR') {
-      console.error('Transaction error:', result);
-      console.error('Error result details:', result.errorResult);
-      
-      // Try to extract more detailed error information
-      let errorMessage = 'Unknown error';
-      if (result.errorResult) {
         try {
-          // Parse the XDR error result for more details
-          const errorXdr = result.errorResult;
-          console.error('Error XDR:', errorXdr);
-          errorMessage = `Transaction failed - Check console for detailed error`;
-        } catch (e) {
-          console.error('Could not parse error result:', e);
+          if (getResponse.returnValue) {
+            const returnVal = StellarSdk.scValToNative(getResponse.returnValue);
+            // returnVal is already a BigInt from scValToNative for u64 types
+            return typeof returnVal === 'bigint' ? returnVal : BigInt(returnVal);
+          }
+        } catch (parseError) {
+          console.log('Could not parse return value:', parseError);
+          // Try to extract from _value._value for UnsignedHyper
+          try {
+            if (getResponse.returnValue?._value?._value !== undefined) {
+              return BigInt(getResponse.returnValue._value._value);
+            }
+          } catch (e) {
+            console.log('Could not extract value:', e);
+          }
         }
+        // Fallback for successful transaction without parseable ID
+        return BigInt(Date.now());
+      } else {
+        throw new Error('Transaction failed');
       }
-      
-      throw new Error(`Transaction error: ${errorMessage}`);
     }
     
-    console.error('Unexpected transaction status:', result.status);
-    throw new Error(`Transaction submission failed with status: ${result.status}`);
+    throw new Error('Transaction submission failed');
   } catch (error) {
     console.error('Error creating stop-loss order:', error);
     return null;
@@ -249,7 +224,7 @@ export const cancelOrder = async (userAddress: string, orderId: bigint): Promise
         contract.call(
           'cancel_order',
           StellarSdk.Address.fromString(userAddress).toScVal(),
-          StellarSdk.xdr.ScVal.scvU64(StellarSdk.xdr.Uint64.fromString(orderId.toString()))
+          StellarSdk.nativeToScVal(orderId, { type: 'u64' })
         )
       )
       .setTimeout(30)
@@ -300,8 +275,8 @@ export const executeOrder = async (userAddress: string, orderId: bigint): Promis
     })
       .addOperation(
         contract.call(
-          'execute_order',
-          StellarSdk.xdr.ScVal.scvU64(StellarSdk.xdr.Uint64.fromString(orderId.toString()))
+          'check_and_execute',
+          StellarSdk.nativeToScVal(orderId, { type: 'u64' })
         )
       )
       .setTimeout(30)
