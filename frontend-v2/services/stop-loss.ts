@@ -195,15 +195,19 @@ export const getUserOrders = async (userAddress: string): Promise<StopLossOrder[
       throw new Error('Stop-loss contract address not configured');
     }
 
+    const server = getServer();
     const contract = new StellarSdk.Contract(STOP_LOSS_CONTRACT);
     
-    const tx = new StellarSdk.TransactionBuilder(
-      new StellarSdk.Account(userAddress, '0'),
-      {
-        fee: '100000',
-        networkPassphrase: getNetworkPassphrase(),
-      }
-    )
+    // Create a source account for simulation (doesn't need to be funded for view calls)
+    const sourceAccount = new StellarSdk.Account(
+      'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF',
+      '0'
+    );
+    
+    const tx = new StellarSdk.TransactionBuilder(sourceAccount, {
+      fee: '100000',
+      networkPassphrase: getNetworkPassphrase(),
+    })
       .addOperation(
         contract.call(
           'get_user_orders',
@@ -213,31 +217,79 @@ export const getUserOrders = async (userAddress: string): Promise<StopLossOrder[
       .setTimeout(30)
       .build();
     
-    const simulated = await getServer().simulateTransaction(tx);
+    console.log('Simulating get_user_orders for:', userAddress);
+    const simulated = await server.simulateTransaction(tx);
+    
+    // Check for the result in different possible locations
+    let orderIds: any[] = [];
+    
     if ('result' in simulated && simulated.result) {
-      // Parse the result array
-      const orders: StopLossOrder[] = [];
-      const result = simulated.result;
-      
-      if (Array.isArray(result)) {
-        for (const order of result) {
-          orders.push({
-            id: BigInt(order.id || 0),
-            user: userAddress,
-            asset: order.asset || '',
-            amount: BigInt(order.amount || 0),
-            stopPrice: BigInt(order.stop_price || 0),
-            orderType: order.order_type || OrderType.StopLoss,
-            status: order.status || 'active',
-            createdAt: order.created_at || Date.now()
-          });
-        }
-      }
-      
-      return orders;
+      const result = StellarSdk.scValToNative(simulated.result);
+      console.log('User order IDs from result:', result);
+      orderIds = Array.isArray(result) ? result : [];
+    } else if ((simulated as any).results && (simulated as any).results.length > 0) {
+      const result = StellarSdk.scValToNative((simulated as any).results[0].xdr);
+      console.log('User order IDs from results[0]:', result);
+      orderIds = Array.isArray(result) ? result : [];
     }
     
-    return [];
+    // Now fetch details for each order ID
+    const orders: StopLossOrder[] = [];
+    for (const orderId of orderIds) {
+      try {
+        // Fetch individual order details
+        const detailsTx = new StellarSdk.TransactionBuilder(sourceAccount, {
+          fee: '100000',
+          networkPassphrase: getNetworkPassphrase(),
+        })
+          .addOperation(
+            contract.call(
+              'get_order_details',
+              StellarSdk.nativeToScVal(BigInt(orderId), { type: 'u64' })
+            )
+          )
+          .setTimeout(30)
+          .build();
+        
+        const detailsSim = await server.simulateTransaction(detailsTx);
+        
+        if ('result' in detailsSim && detailsSim.result) {
+          const details = StellarSdk.scValToNative(detailsSim.result);
+          console.log(`Order ${orderId} details:`, details);
+          
+          // Parse the order details
+          orders.push({
+            id: BigInt(orderId),
+            user: userAddress,
+            asset: details.asset || 'Unknown',
+            amount: BigInt(details.amount || 0),
+            stopPrice: BigInt(details.stop_price || 0),
+            orderType: details.trailing_percent ? OrderType.TrailingStop : 
+                      details.take_profit_price ? OrderType.OCO : 
+                      OrderType.StopLoss,
+            status: (details.status || 'Active').toLowerCase() as 'active' | 'executed' | 'cancelled',
+            createdAt: Number(details.created_at || 0) * 1000 // Convert to milliseconds
+          });
+        } else {
+          // Fallback if we can't get details
+          orders.push({
+            id: BigInt(orderId),
+            user: userAddress,
+            asset: 'Unknown',
+            amount: BigInt(0),
+            stopPrice: BigInt(0),
+            orderType: OrderType.StopLoss,
+            status: 'active',
+            createdAt: Date.now()
+          });
+        }
+      } catch (e) {
+        console.error(`Error fetching order ${orderId}:`, e);
+      }
+    }
+    
+    console.log('Fetched orders:', orders);
+    return orders;
   } catch (error) {
     console.error('Error fetching user orders:', error);
     return [];

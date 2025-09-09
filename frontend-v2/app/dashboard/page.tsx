@@ -225,13 +225,23 @@ function DashboardContent() {
         <div className="lg:col-span-2">
           <NeonCard>
             <CardHeader>
-              <CardTitle className="text-orange-400 font-mono flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                ACTIVE_ORDERS
-              </CardTitle>
-              <CardDescription className="font-mono text-gray-400">
-                Real-time order monitoring
-              </CardDescription>
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-orange-400 font-mono flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    ACTIVE_ORDERS
+                  </CardTitle>
+                  <CardDescription className="font-mono text-gray-400">
+                    Real-time order monitoring
+                  </CardDescription>
+                </div>
+                <Link href="/orders">
+                  <CyberButton size="sm" variant="secondary">
+                    <Eye className="h-4 w-4 mr-2" />
+                    VIEW_ALL
+                  </CyberButton>
+                </Link>
+              </div>
             </CardHeader>
             <CardContent>
               {orders.length > 0 ? (
