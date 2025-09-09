@@ -223,14 +223,33 @@ export const getUserOrders = async (userAddress: string): Promise<StopLossOrder[
     // Check for the result in different possible locations
     let orderIds: any[] = [];
     
-    if ('result' in simulated && simulated.result) {
-      const result = StellarSdk.scValToNative(simulated.result);
-      console.log('User order IDs from result:', result);
-      orderIds = Array.isArray(result) ? result : [];
-    } else if ((simulated as any).results && (simulated as any).results.length > 0) {
-      const result = StellarSdk.scValToNative((simulated as any).results[0].xdr);
-      console.log('User order IDs from results[0]:', result);
-      orderIds = Array.isArray(result) ? result : [];
+    try {
+      if ('result' in simulated && simulated.result) {
+        try {
+          const result = StellarSdk.scValToNative(simulated.result);
+          console.log('User order IDs from result:', result);
+          orderIds = Array.isArray(result) ? result : [];
+        } catch (e) {
+          console.log('Could not parse result with scValToNative, trying raw:', e);
+          // Try to access the raw value
+          if ((simulated.result as any)?._value) {
+            orderIds = (simulated.result as any)._value;
+            console.log('User order IDs from raw value:', orderIds);
+          }
+        }
+      } else if ((simulated as any).results && (simulated as any).results.length > 0) {
+        try {
+          const result = StellarSdk.scValToNative((simulated as any).results[0].xdr);
+          console.log('User order IDs from results[0]:', result);
+          orderIds = Array.isArray(result) ? result : [];
+        } catch (e) {
+          console.log('Could not parse results[0] with scValToNative:', e);
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing order IDs:', error);
+      // Return empty array if we can't parse
+      return [];
     }
     
     // Now fetch details for each order ID
@@ -253,10 +272,25 @@ export const getUserOrders = async (userAddress: string): Promise<StopLossOrder[
         
         const detailsSim = await server.simulateTransaction(detailsTx);
         
-        if ('result' in detailsSim && detailsSim.result) {
-          const details = StellarSdk.scValToNative(detailsSim.result);
-          console.log(`Order ${orderId} details:`, details);
-          
+        let details: any = null;
+        try {
+          if ('result' in detailsSim && detailsSim.result) {
+            try {
+              details = StellarSdk.scValToNative(detailsSim.result);
+              console.log(`Order ${orderId} details:`, details);
+            } catch (e) {
+              console.log(`Could not parse order ${orderId} details with scValToNative:`, e);
+              // Try to access raw value if parsing fails
+              if ((detailsSim.result as any)?._value) {
+                details = (detailsSim.result as any)._value;
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error parsing order ${orderId} details:`, error);
+        }
+        
+        if (details) {
           // Parse the order details
           orders.push({
             id: BigInt(orderId),

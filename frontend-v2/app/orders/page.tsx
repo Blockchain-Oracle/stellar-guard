@@ -25,24 +25,19 @@ import Link from "next/link";
 import { isWalletConnected, getPublicKey } from "@/lib/stellar";
 import { getUserOrders, cancelOrder, StopLossOrder, OrderType } from "@/services/stop-loss";
 import { getCurrentPrice } from "@/services/oracle";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<StopLossOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [prices, setPrices] = useState<{ [key: string]: number }>({});
-  const { toast } = useToast();
 
   const fetchOrders = async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
     try {
       if (!isWalletConnected()) {
-        toast({
-          title: "Wallet not connected",
-          description: "Please connect your wallet to view orders",
-          variant: "destructive",
-        });
+        toast.error("Please connect your wallet to view orders");
         return;
       }
 
@@ -73,11 +68,7 @@ export default function OrdersPage() {
       setPrices(priceMap);
     } catch (error) {
       console.error('Error fetching orders:', error);
-      toast({
-        title: "Error fetching orders",
-        description: "Failed to load your orders. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to load your orders. Please try again.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -94,25 +85,14 @@ export default function OrdersPage() {
       const success = await cancelOrder(userAddress, orderId);
       
       if (success) {
-        toast({
-          title: "Order cancelled",
-          description: `Order #${orderId} has been cancelled successfully.`,
-        });
+        toast.success(`Order #${orderId} has been cancelled successfully.`);
         fetchOrders(true);
       } else {
-        toast({
-          title: "Cancellation failed",
-          description: "Failed to cancel the order. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to cancel the order. Please try again.");
       }
     } catch (error) {
       console.error('Error cancelling order:', error);
-      toast({
-        title: "Error",
-        description: "An error occurred while cancelling the order.",
-        variant: "destructive",
-      });
+      toast.error("An error occurred while cancelling the order.");
     }
   };
 
