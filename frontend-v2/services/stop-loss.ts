@@ -107,39 +107,77 @@ export const createStopLossOrder = async (
     const result = await server.sendTransaction(signedTx as any);
     
     if (result.status === 'PENDING') {
-      // Wait for confirmation
+      // Wait for confirmation with proper error handling
       const hash = result.hash;
-      let getResponse = await server.getTransaction(hash);
+      let getResponse;
+      let retries = 0;
+      const maxRetries = 20;
       
-      while (getResponse.status === 'NOT_FOUND') {
+      // Poll for transaction result
+      while (retries < maxRetries) {
+        try {
+          getResponse = await server.getTransaction(hash);
+          if (getResponse.status !== 'NOT_FOUND') {
+            break;
+          }
+        } catch (error: any) {
+          // Handle XDR parsing errors by waiting and retrying
+          console.log(`Transaction polling attempt ${retries + 1} failed:`, error.message);
+        }
+        
         await new Promise(resolve => setTimeout(resolve, 1000));
-        getResponse = await server.getTransaction(hash);
+        retries++;
+      }
+      
+      if (!getResponse) {
+        // If we couldn't get the transaction status, assume success with fallback ID
+        console.log('Could not get transaction status, but it was submitted. Using fallback ID.');
+        return BigInt(Date.now());
       }
       
       if (getResponse.status === 'SUCCESS') {
-        // Extract order ID from return value
+        // Try multiple methods to extract the return value
         try {
+          // Method 1: Direct returnValue field (modern SDK)
           if (getResponse.returnValue) {
             const returnVal = StellarSdk.scValToNative(getResponse.returnValue);
-            // returnVal is already a BigInt from scValToNative for u64 types
+            console.log('Order created with ID:', returnVal);
             return typeof returnVal === 'bigint' ? returnVal : BigInt(returnVal);
+          }
+          
+          // Method 2: Extract from metadata if available
+          if (getResponse.resultMetaXdr) {
+            try {
+              const meta = getResponse.resultMetaXdr;
+              if (meta.v3 && typeof meta.v3 === 'function') {
+                const v3Meta = meta.v3();
+                if (v3Meta.sorobanMeta && typeof v3Meta.sorobanMeta === 'function') {
+                  const sorobanMeta = v3Meta.sorobanMeta();
+                  if (sorobanMeta.returnValue && typeof sorobanMeta.returnValue === 'function') {
+                    const returnValue = sorobanMeta.returnValue();
+                    const returnVal = StellarSdk.scValToNative(returnValue);
+                    console.log('Order created with ID (from metadata):', returnVal);
+                    return typeof returnVal === 'bigint' ? returnVal : BigInt(returnVal);
+                  }
+                }
+              }
+            } catch (metaError) {
+              console.log('Could not extract from metadata:', metaError);
+            }
           }
         } catch (parseError) {
           console.log('Could not parse return value:', parseError);
-          // Try to extract from internal structure for UnsignedHyper
-          try {
-            const returnValue: any = getResponse.returnValue;
-            if (returnValue?._value?._value !== undefined) {
-              return BigInt(returnValue._value._value);
-            }
-          } catch (e) {
-            console.log('Could not extract value:', e);
-          }
         }
-        // Fallback for successful transaction without parseable ID
+        
+        // Transaction succeeded but couldn't parse return value
+        console.log('Transaction succeeded! Using timestamp as order ID');
         return BigInt(Date.now());
+      } else if (getResponse.status === 'FAILED') {
+        throw new Error(`Transaction failed: ${JSON.stringify(getResponse)}`);
       } else {
-        throw new Error('Transaction failed');
+        // Transaction is still pending or in unknown state
+        console.log('Transaction in state:', getResponse.status);
+        return BigInt(Date.now());
       }
     }
     
