@@ -163,54 +163,56 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <GlitchText 
             text="TRADING_DASHBOARD" 
-            className="text-3xl font-bold text-orange-500 font-mono"
+            className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-500 font-mono"
           />
-          <p className="text-gray-400 font-mono mt-2">
+          <p className="text-gray-400 font-mono mt-1 sm:mt-2 text-xs sm:text-sm">
             [REAL_TIME_ORACLE_DATA.EXE]
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <CyberButton 
             onClick={loadData} 
             variant="secondary"
             disabled={refreshing}
+            size="sm"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            REFRESH
+            <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 sm:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">REFRESH</span>
           </CyberButton>
           <Link href="/orders/create">
-            <CyberButton>
-              <Plus className="h-4 w-4 mr-2" />
-              NEW_ORDER
+            <CyberButton size="sm">
+              <Plus className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">NEW_ORDER</span>
+              <span className="sm:hidden">NEW</span>
             </CyberButton>
           </Link>
         </div>
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
         {metrics.map((metric, index) => {
           const Icon = metric.icon
           return (
             <NeonCard key={index} variant={index % 2 === 0 ? "orange" : "cyan"}>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Icon className={`h-5 w-5 ${metric.color}`} />
+              <div className="p-3 sm:p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+                  <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${metric.color}`} />
                   <Badge 
                     variant={metric.change.includes('+') || metric.change === 'STABLE' || metric.change === 'LIVE' ? 'default' : 'destructive'}
-                    className="font-mono text-xs"
+                    className="font-mono text-[10px] sm:text-xs"
                   >
                     {metric.change}
                   </Badge>
                 </div>
-                <div className={`text-2xl font-bold font-mono ${metric.color}`}>
+                <div className={`text-sm sm:text-lg md:text-2xl font-bold font-mono ${metric.color}`}>
                   {metric.value}
                 </div>
-                <p className="text-xs text-gray-400 font-mono mt-1">
+                <p className="text-[10px] sm:text-xs text-gray-400 font-mono mt-1 truncate">
                   {metric.label}
                 </p>
               </div>

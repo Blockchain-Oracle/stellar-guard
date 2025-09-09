@@ -214,39 +214,42 @@ export default function PricesPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <GlitchText 
             text="ORACLE_PRICES" 
-            className="text-3xl font-bold text-orange-500 font-mono"
+            className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-500 font-mono"
           />
-          <p className="text-gray-400 font-mono mt-2">
+          <p className="text-gray-400 font-mono mt-1 sm:mt-2 text-xs sm:text-sm">
             [REFLECTOR_ORACLE_NETWORK.EXE]
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <CyberButton
             onClick={() => setAutoRefresh(!autoRefresh)}
             variant={autoRefresh ? "primary" : "secondary"}
+            size="sm"
           >
-            <Activity className={`h-4 w-4 mr-2 ${autoRefresh ? 'animate-pulse' : ''}`} />
-            {autoRefresh ? 'AUTO_ON' : 'AUTO_OFF'}
+            <Activity className={`h-3 w-3 sm:h-4 sm:w-4 sm:mr-2 ${autoRefresh ? 'animate-pulse' : ''}`} />
+            <span className="hidden sm:inline">{autoRefresh ? 'AUTO_ON' : 'AUTO_OFF'}</span>
+            <span className="sm:hidden">{autoRefresh ? 'ON' : 'OFF'}</span>
           </CyberButton>
           <CyberButton 
             onClick={loadAllPrices} 
             variant="secondary"
             disabled={refreshing}
+            size="sm"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            REFRESH
+            <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            <span className="ml-1 sm:ml-2">REFRESH</span>
           </CyberButton>
         </div>
       </div>
 
       {/* Oracle Status */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
         <NeonCard variant="orange">
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
               <Globe className="h-5 w-5 text-orange-400" />
               <Badge 
@@ -264,7 +267,7 @@ export default function PricesPage() {
         </NeonCard>
 
         <NeonCard variant="cyan">
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
               <Zap className="h-5 w-5 text-cyan-400" />
               <Badge 
@@ -282,7 +285,7 @@ export default function PricesPage() {
         </NeonCard>
 
         <NeonCard variant="green">
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
               <DollarSign className="h-5 w-5 text-green-400" />
               <Badge 
@@ -301,41 +304,41 @@ export default function PricesPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2">
+      <div className="flex gap-1 sm:gap-2 overflow-x-auto">
         <CyberButton
           onClick={() => setSelectedTab('crypto')}
           variant={selectedTab === 'crypto' ? 'primary' : 'secondary'}
           size="sm"
         >
-          CRYPTO ({cryptoPrices.length})
+          <span className="text-xs sm:text-sm">CRYPTO ({cryptoPrices.length})</span>
         </CyberButton>
         <CyberButton
           onClick={() => setSelectedTab('stellar')}
           variant={selectedTab === 'stellar' ? 'primary' : 'secondary'}
           size="sm"
         >
-          STELLAR ({stellarPrices.length})
+          <span className="text-xs sm:text-sm">STELLAR ({stellarPrices.length})</span>
         </CyberButton>
         <CyberButton
           onClick={() => setSelectedTab('forex')}
           variant={selectedTab === 'forex' ? 'primary' : 'secondary'}
           size="sm"
         >
-          FOREX ({forexPrices.length})
+          <span className="text-xs sm:text-sm">FOREX ({forexPrices.length})</span>
         </CyberButton>
       </div>
 
       {/* Price Table */}
       <NeonCard>
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-cyan-400 font-mono">
+        <div className="p-3 sm:p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-cyan-400 font-mono">
               LIVE_PRICE_FEED
             </h2>
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-400" />
-              <span className="text-xs text-gray-400 font-mono">
-                Updated: {new Date().toLocaleTimeString()}
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+              <span className="text-[10px] sm:text-xs text-gray-400 font-mono">
+                {new Date().toLocaleTimeString()}
               </span>
             </div>
           </div>
@@ -344,12 +347,12 @@ export default function PricesPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-800">
-                  <th className="text-left py-3 px-4 font-mono text-gray-400 text-sm">ASSET</th>
-                  <th className="text-right py-3 px-4 font-mono text-gray-400 text-sm">SPOT_PRICE</th>
-                  <th className="text-right py-3 px-4 font-mono text-gray-400 text-sm">TWAP_5</th>
-                  <th className="text-right py-3 px-4 font-mono text-gray-400 text-sm">TWAP_10</th>
-                  <th className="text-center py-3 px-4 font-mono text-gray-400 text-sm">24H_CHANGE</th>
-                  <th className="text-center py-3 px-4 font-mono text-gray-400 text-sm">SPREAD</th>
+                  <th className="text-left py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">ASSET</th>
+                  <th className="text-right py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">SPOT</th>
+                  <th className="hidden sm:table-cell text-right py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">TWAP_5</th>
+                  <th className="hidden md:table-cell text-right py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">TWAP_10</th>
+                  <th className="text-center py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">24H</th>
+                  <th className="hidden lg:table-cell text-center py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-[10px] sm:text-xs md:text-sm">SPREAD</th>
                 </tr>
               </thead>
               <tbody>
@@ -360,27 +363,27 @@ export default function PricesPage() {
                   
                   return (
                     <tr key={price.asset} className="border-b border-gray-800 hover:bg-gray-900/50 transition">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="font-mono">
+                      <td className="py-2 sm:py-3 px-2 sm:px-4">
+                        <div className="flex items-center gap-1 sm:gap-2">
+                          <Badge variant="outline" className="font-mono text-[10px] sm:text-xs">
                             {price.symbol}
                           </Badge>
                         </div>
                       </td>
-                      <td className="text-right py-3 px-4 font-mono font-bold text-white">
+                      <td className="text-right py-2 sm:py-3 px-2 sm:px-4 font-mono font-bold text-white text-xs sm:text-sm">
                         {formatPrice(price.spotPrice, selectedTab === 'forex')}
                       </td>
-                      <td className="text-right py-3 px-4 font-mono text-gray-400">
+                      <td className="hidden sm:table-cell text-right py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-xs sm:text-sm">
                         {formatPrice(price.twapPrice5, selectedTab === 'forex')}
                       </td>
-                      <td className="text-right py-3 px-4 font-mono text-gray-400">
+                      <td className="hidden md:table-cell text-right py-2 sm:py-3 px-2 sm:px-4 font-mono text-gray-400 text-xs sm:text-sm">
                         {formatPrice(price.twapPrice10, selectedTab === 'forex')}
                       </td>
-                      <td className="text-center py-3 px-4">
+                      <td className="text-center py-2 sm:py-3 px-2 sm:px-4">
                         {formatChange(price.change24h)}
                       </td>
-                      <td className="text-center py-3 px-4">
-                        <span className={`font-mono text-sm ${
+                      <td className="hidden lg:table-cell text-center py-2 sm:py-3 px-2 sm:px-4">
+                        <span className={`font-mono text-xs sm:text-sm ${
                           Math.abs(spread) > 1 ? 'text-yellow-400' : 'text-gray-400'
                         }`}>
                           {spread.toFixed(2)}%

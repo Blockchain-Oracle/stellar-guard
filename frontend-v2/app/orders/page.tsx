@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NeonCard } from "@/components/neon-card";
+import { CyberButton } from "@/components/cyber-button";
+import { GlitchText } from "@/components/glitch-text";
 import { 
   Table, 
   TableBody, 
@@ -19,7 +22,9 @@ import {
   TrendingUp, 
   AlertCircle,
   RefreshCw,
-  Trash2
+  Trash2,
+  Clock,
+  DollarSign
 } from "lucide-react";
 import Link from "next/link";
 import { isWalletConnected, getPublicKey } from "@/lib/stellar";
@@ -63,7 +68,7 @@ export default function OrdersPage() {
       const priceResults = await Promise.all(pricePromises);
       const priceMap: { [key: string]: number } = {};
       priceResults.forEach(({ asset, price }) => {
-        priceMap[asset] = price ?? 0; // Use 0 as fallback if price is null/undefined
+        priceMap[asset] = price ?? 0;
       });
       setPrices(priceMap);
     } catch (error) {
@@ -121,13 +126,13 @@ export default function OrdersPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default">Active</Badge>;
+        return <Badge variant="default" className="text-xs">Active</Badge>;
       case 'executed':
-        return <Badge variant="secondary">Executed</Badge>;
+        return <Badge variant="secondary" className="text-xs">Executed</Badge>;
       case 'cancelled':
-        return <Badge variant="destructive">Cancelled</Badge>;
+        return <Badge variant="destructive" className="text-xs">Cancelled</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="text-xs">{status}</Badge>;
     }
   };
 
@@ -136,149 +141,238 @@ export default function OrdersPage() {
     const distance = ((currentPrice - stopPriceNum) / currentPrice) * 100;
     
     if (orderType === OrderType.TakeProfit) {
-      return -distance; // Invert for take profit
+      return -distance;
     }
     return distance;
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center">
+        <GlitchText text="LOADING_ORDERS..." className="text-xl sm:text-2xl text-orange-400" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Your Orders</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2">
-            Manage your stop-loss, take-profit, and trailing stop orders
+          <GlitchText 
+            text="YOUR_ORDERS" 
+            className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-500 font-mono"
+          />
+          <p className="text-gray-400 font-mono mt-1 text-xs sm:text-sm">
+            [STOP_LOSS_PROTECTION.EXE]
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           <Link href="/orders/all">
-            <Button variant="outline">
-              View All Orders
-            </Button>
+            <CyberButton variant="secondary" size="sm">
+              <span className="text-xs sm:text-sm">ALL</span>
+            </CyberButton>
           </Link>
-          <Button
-            variant="outline"
+          <CyberButton
+            variant="secondary"
             size="sm"
             onClick={() => fetchOrders(true)}
             disabled={refreshing}
           >
-            {refreshing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <RefreshCw className="h-4 w-4" />
-            )}
-            Refresh
-          </Button>
+            <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          </CyberButton>
           <Link href="/orders/create">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Order
-            </Button>
+            <CyberButton size="sm">
+              <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              <span className="text-xs sm:text-sm">NEW</span>
+            </CyberButton>
           </Link>
         </div>
       </div>
 
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <NeonCard variant="orange">
+          <div className="p-3 sm:p-4">
+            <p className="text-xs text-gray-400 font-mono">ACTIVE</p>
+            <p className="text-lg sm:text-2xl font-bold text-orange-400 font-mono">
+              {orders.filter(o => o.status === 'active').length}
+            </p>
+          </div>
+        </NeonCard>
+        <NeonCard variant="cyan">
+          <div className="p-3 sm:p-4">
+            <p className="text-xs text-gray-400 font-mono">TOTAL</p>
+            <p className="text-lg sm:text-2xl font-bold text-cyan-400 font-mono">
+              {orders.length}
+            </p>
+          </div>
+        </NeonCard>
+        <NeonCard variant="green">
+          <div className="p-3 sm:p-4">
+            <p className="text-xs text-gray-400 font-mono">EXECUTED</p>
+            <p className="text-lg sm:text-2xl font-bold text-green-400 font-mono">
+              {orders.filter(o => o.status === 'executed').length}
+            </p>
+          </div>
+        </NeonCard>
+        <NeonCard variant="purple">
+          <div className="p-3 sm:p-4">
+            <p className="text-xs text-gray-400 font-mono">CANCELLED</p>
+            <p className="text-lg sm:text-2xl font-bold text-purple-400 font-mono">
+              {orders.filter(o => o.status === 'cancelled').length}
+            </p>
+          </div>
+        </NeonCard>
+      </div>
+
       {orders.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
-            <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4" />
-            <h3 className="text-base sm:text-lg font-semibold mb-2">No orders yet</h3>
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 text-center">
-              Create your first stop-loss order to protect your assets
+        <NeonCard>
+          <div className="p-8 sm:p-12 text-center">
+            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-gray-300 mb-2">NO_ORDERS_FOUND</h3>
+            <p className="text-sm text-gray-400 mb-4">
+              Create your first order to protect your assets
             </p>
             <Link href="/orders/create">
-              <Button>
+              <CyberButton>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Order
-              </Button>
+                CREATE_ORDER
+              </CyberButton>
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </NeonCard>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Active Orders ({orders.filter(o => o.status === 'active').length})</CardTitle>
-            <CardDescription className="text-sm">
-              Total orders: {orders.length}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0 sm:p-6">
+        <>
+          {/* Mobile Cards (visible on small screens) */}
+          <div className="block lg:hidden space-y-3">
+            {orders.map((order) => {
+              const currentPrice = prices[order.asset] || 0;
+              const distance = calculateDistance(currentPrice, order.stopPrice, order.orderType);
+              
+              return (
+                <NeonCard key={order.id.toString()} variant={order.status === 'active' ? 'orange' : 'default'}>
+                  <div className="p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2">
+                        {getOrderTypeIcon(order.orderType)}
+                        <span className="font-mono text-sm">#{order.id.toString()}</span>
+                      </div>
+                      {getStatusBadge(order.status)}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-400">Asset</span>
+                        <span className="font-mono font-bold">{order.asset}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-400">Amount</span>
+                        <span className="font-mono">{formatAmount(order.amount)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-400">Stop Price</span>
+                        <span className="font-mono text-orange-400">${formatPrice(order.stopPrice)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-400">Current</span>
+                        <span className="font-mono">${currentPrice.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-400">Distance</span>
+                        <span className={`font-mono text-sm ${
+                          Math.abs(distance) < 5 ? 'text-red-400' : 
+                          Math.abs(distance) < 10 ? 'text-yellow-400' : 'text-green-400'
+                        }`}>
+                          {distance > 0 ? '+' : ''}{distance.toFixed(2)}%
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {order.status === 'active' && (
+                      <div className="mt-4 pt-3 border-t border-gray-800">
+                        <CyberButton
+                          variant="destructive"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => handleCancelOrder(order.id)}
+                        >
+                          <Trash2 className="h-3 w-3 mr-2" />
+                          CANCEL_ORDER
+                        </CyberButton>
+                      </div>
+                    )}
+                  </div>
+                </NeonCard>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table (hidden on small screens) */}
+          <NeonCard className="hidden lg:block">
             <div className="overflow-x-auto">
               <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Asset</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Stop Price</TableHead>
-                  <TableHead>Current Price</TableHead>
-                  <TableHead>Distance</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => {
-                  const currentPrice = prices[order.asset] || 0;
-                  const distance = calculateDistance(currentPrice, order.stopPrice, order.orderType);
-                  
-                  return (
-                    <TableRow key={order.id.toString()}>
-                      <TableCell className="font-mono">#{order.id.toString()}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getOrderTypeIcon(order.orderType)}
-                          <span className="capitalize">
-                            {order.orderType.replace('_', ' ')}
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">ID</TableHead>
+                    <TableHead className="text-xs">TYPE</TableHead>
+                    <TableHead className="text-xs">ASSET</TableHead>
+                    <TableHead className="text-xs">AMOUNT</TableHead>
+                    <TableHead className="text-xs">STOP_PRICE</TableHead>
+                    <TableHead className="text-xs">CURRENT</TableHead>
+                    <TableHead className="text-xs">DISTANCE</TableHead>
+                    <TableHead className="text-xs">STATUS</TableHead>
+                    <TableHead className="text-xs">ACTIONS</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order) => {
+                    const currentPrice = prices[order.asset] || 0;
+                    const distance = calculateDistance(currentPrice, order.stopPrice, order.orderType);
+                    
+                    return (
+                      <TableRow key={order.id.toString()}>
+                        <TableCell className="font-mono text-sm">#{order.id.toString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {getOrderTypeIcon(order.orderType)}
+                            <span className="capitalize text-sm">
+                              {order.orderType.replace('_', ' ')}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-bold text-sm">{order.asset}</TableCell>
+                        <TableCell className="font-mono text-sm">{formatAmount(order.amount)}</TableCell>
+                        <TableCell className="font-mono text-sm text-orange-400">${formatPrice(order.stopPrice)}</TableCell>
+                        <TableCell className="font-mono text-sm">${currentPrice.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <span className={`font-mono text-sm ${
+                            Math.abs(distance) < 5 ? 'text-red-400' : 
+                            Math.abs(distance) < 10 ? 'text-yellow-400' : 'text-green-400'
+                          }`}>
+                            {distance > 0 ? '+' : ''}{distance.toFixed(2)}%
                           </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-semibold">{order.asset}</TableCell>
-                      <TableCell>{formatAmount(order.amount)}</TableCell>
-                      <TableCell>${formatPrice(order.stopPrice)}</TableCell>
-                      <TableCell>
-                        {currentPrice > 0 ? `$${currentPrice.toFixed(2)}` : '-'}
-                      </TableCell>
-                      <TableCell>
-                        {currentPrice > 0 && (
-                          <span className={distance > 10 ? 'text-green-500' : distance < 5 ? 'text-red-500' : ''}>
-                            {distance.toFixed(2)}%
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell>
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        {order.status === 'active' && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleCancelOrder(order.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(order.status)}</TableCell>
+                        <TableCell>
+                          {order.status === 'active' && (
+                            <CyberButton
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleCancelOrder(order.id)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </CyberButton>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
+          </NeonCard>
+        </>
       )}
     </div>
   );
