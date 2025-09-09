@@ -251,7 +251,7 @@ export default function OrdersPage() {
               const distance = calculateDistance(currentPrice, order.stopPrice, order.orderType);
               
               return (
-                <NeonCard key={order.id.toString()} variant={order.status === 'active' ? 'orange' : 'default'}>
+                <NeonCard key={order.id.toString()} variant={order.status === 'active' ? 'orange' : undefined}>
                   <div className="p-4">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-2">
@@ -292,7 +292,7 @@ export default function OrdersPage() {
                     {order.status === 'active' && (
                       <div className="mt-4 pt-3 border-t border-gray-800">
                         <CyberButton
-                          variant="destructive"
+                          variant="danger"
                           size="sm"
                           className="w-full"
                           onClick={() => handleCancelOrder(order.id)}
@@ -357,7 +357,7 @@ export default function OrdersPage() {
                         <TableCell>
                           {order.status === 'active' && (
                             <CyberButton
-                              variant="destructive"
+                              variant="danger"
                               size="sm"
                               onClick={() => handleCancelOrder(order.id)}
                             >
