@@ -133,6 +133,9 @@ export default function Header() {
           <a href="/dashboard" className="font-mono text-sm text-gray-400 hover:text-orange-400 transition-colors">
             [DASHBOARD]
           </a>
+          <a href="/orders" className="font-mono text-sm text-gray-400 hover:text-orange-400 transition-colors">
+            [ORDERS]
+          </a>
           <a href="/prices" className="font-mono text-sm text-gray-400 hover:text-orange-400 transition-colors">
             [PRICES]
           </a>
