@@ -118,9 +118,9 @@ export default function PricesPage() {
       try {
         console.log(`[loadPricesForAssets] Fetching prices for ${asset} (${source})...`)
         const [spot, twap5, twap10] = await Promise.all([
-          getCurrentPrice(asset),
-          getTWAPPrice(asset, 5),
-          getTWAPPrice(asset, 10)
+          getCurrentPrice(asset, source),
+          getTWAPPrice(asset, 5, source),
+          getTWAPPrice(asset, 10, source)
         ])
         
         console.log(`[loadPricesForAssets] Results for ${asset}:`, {
