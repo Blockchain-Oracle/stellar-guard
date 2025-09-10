@@ -313,16 +313,29 @@ export const getUserOrders = async (userAddress: string): Promise<StopLossOrder[
         
         if (details) {
           // Parse the order details
+          // Ensure status is a string before calling toLowerCase
+          // Handle both array and string status values
+          let status: 'active' | 'executed' | 'cancelled' = 'active';
+          if (details.status) {
+            let statusStr: string;
+            if (Array.isArray(details.status)) {
+              statusStr = String(details.status[0] || 'Active');
+            } else {
+              statusStr = String(details.status);
+            }
+            status = statusStr.toLowerCase() as 'active' | 'executed' | 'cancelled';
+          }
+          
           orders.push({
             id: BigInt(orderId),
-            user: userAddress,
+            user: details.owner || userAddress,
             asset: details.asset || 'Unknown',
             amount: BigInt(details.amount || 0),
             stopPrice: BigInt(details.stop_price || 0),
             orderType: details.trailing_percent ? OrderType.TrailingStop : 
                       details.take_profit_price ? OrderType.OCO : 
                       OrderType.StopLoss,
-            status: (details.status || 'Active').toLowerCase() as 'active' | 'executed' | 'cancelled',
+            status: status,
             createdAt: Number(details.created_at || 0) * 1000 // Convert to milliseconds
           });
         } else {
@@ -567,14 +580,27 @@ export const getAllOrders = async (): Promise<StopLossOrder[]> => {
           const details = 'retval' in detailsSim.result ? StellarSdk.scValToNative(detailsSim.result.retval) : detailsSim.result;
           console.log(`✅ Order ${orderId} details:`, details);
           
+          // Ensure status is a string before calling toLowerCase
+          // Handle both array and string status values
+          let status: 'active' | 'executed' | 'cancelled' = 'active';
+          if (details.status) {
+            let statusStr: string;
+            if (Array.isArray(details.status)) {
+              statusStr = String(details.status[0] || 'Active');
+            } else {
+              statusStr = String(details.status);
+            }
+            status = statusStr.toLowerCase() as 'active' | 'executed' | 'cancelled';
+          }
+          
           orders.push({
             id: BigInt(orderId),
-            user: details.user || 'Unknown',
+            user: details.owner || details.user || 'Unknown',
             asset: details.asset || 'Unknown',
             amount: BigInt(details.amount || 0),
             stopPrice: BigInt(details.stop_price || 0),
             orderType: OrderType.StopLoss,
-            status: (details.status || 'active').toLowerCase() as 'active' | 'executed' | 'cancelled',
+            status: status,
             createdAt: Number(details.created_at || Date.now() / 1000) * 1000
           });
         }
